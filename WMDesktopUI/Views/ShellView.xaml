@@ -1,0 +1,107 @@
+﻿<Window x:Class="WMDesktopUI.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        Foreground="White"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        xmlns:local="clr-namespace:WMDesktopUI.Views" 
+        mc:Ignorable="d" Height="450" Width="800"  WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown">
+
+    <Window.Resources>
+        <Storyboard x:Key="MenuOpen">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="60"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="200"/>
+            </DoubleAnimationUsingKeyFrames>
+            
+        </Storyboard>
+        <Storyboard x:Key="MenuClose">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="60"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BtnOpenMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuOpen}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BtnCloseMenu">
+            <BeginStoryboard Storyboard="{StaticResource MenuClose}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Grid>
+        <Grid Height="60" VerticalAlignment="Top" Background="#FF27BDEA">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <TextBlock Text="Menu" VerticalAlignment="Center" FontSize="18"/>
+                <materialDesign:PopupBox HorizontalAlignment="Right" Margin="10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                    <StackPanel Width="150">
+                        <Button Content="Settings"/>
+                        <Button x:Name="BtnExitApplication" Content="Exit" Click="BtnExitApplication_Click"/>
+                    </StackPanel>
+                </materialDesign:PopupBox>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="UserControl" Margin="60 60 0 0" >
+            <ContentControl x:Name="ActiveItem"/>
+        </Grid>
+        <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#FF044474">
+
+            <StackPanel>
+                <Grid Height="60" Background="White">
+                    <Button x:Name="BtnCloseMenu" Click="BtnCloseMenu_Click" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <materialDesign:PackIcon Foreground="#4e7e92" Kind="ArrowLeft" Width="25" Height="25"/>
+                    </Button>
+                    <Button x:Name="BtnOpenMenu" Click="BtnOpenMenu_Click" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <materialDesign:PackIcon Foreground="#4e7e92" Kind="Menu" Width="25" Height="25"/>
+                    </Button>
+                </Grid>
+
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" Foreground="#4e7e92">
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenWareHouse" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Warehouse" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Склад" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenOrders" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Cart" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Замовлення" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenHistory" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="History" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Історія" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenToBuy" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CartAdd" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Докупити" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenClients" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="People" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Клієнти" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+                </ListView>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
