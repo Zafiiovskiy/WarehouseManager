@@ -13,7 +13,7 @@
         Foreground="White"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:WMDesktopUI.Views" 
-        mc:Ignorable="d" Height="450" Width="800"  WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown">
+        mc:Ignorable="d" Height="450" Width="800"  WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown" WindowState="{Binding MyWindowState}">
 
     <Window.Resources>
         <Storyboard x:Key="MenuOpen">
@@ -42,14 +42,23 @@
 
     <Grid>
         <Grid Height="60" VerticalAlignment="Top" Background="#FF27BDEA">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <TextBlock Text="Menu" VerticalAlignment="Center" FontSize="18"/>
-                <materialDesign:PopupBox HorizontalAlignment="Right" Margin="10" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                    <StackPanel Width="150">
-                        <Button Content="Settings"/>
-                        <Button x:Name="BtnExitApplication" Content="Exit" Click="BtnExitApplication_Click"/>
-                    </StackPanel>
-                </materialDesign:PopupBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Button x:Name="GoRoll" Margin="3" Height="30" Width="30" Foreground="White" Padding="0" 
+                Background="Transparent" BorderBrush="{x:Null}">
+                    <materialDesign:PackIcon Kind="WindowMinimize" Width="30" Height="30" VerticalAlignment="Center"/>
+                </Button>
+                <Button x:Name="GoFullScreen" Margin="3" Height="30" Width="30" Foreground="White" Padding="0" 
+                Background="Transparent" BorderBrush="{x:Null}" Visibility="{Binding WindowMaximizeButtonVisibility}">
+                    <materialDesign:PackIcon Kind="WindowMaximize" Width="30" Height="30" VerticalAlignment="Center"/>
+                </Button>
+                <Button x:Name="GoMinScreen" Margin="3" Height="30" Width="30" Foreground="White" Padding="0" 
+                Background="Transparent" BorderBrush="{x:Null}"  Visibility="{Binding WindowMinimizeButtonVisibility}">
+                    <materialDesign:PackIcon Kind="WindowRestore" Width="30" Height="30" VerticalAlignment="Center"/>
+                </Button>
+                <Button x:Name="CloseApplication" Margin="3" Height="30" Width="30" Foreground="White" Padding="0" 
+                Background="Transparent" BorderBrush="{x:Null}">
+                    <materialDesign:PackIcon Kind="WindowClose" Width="30" Height="30" VerticalAlignment="Center"/>
+                </Button>
             </StackPanel>
         </Grid>
 
@@ -72,6 +81,13 @@
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenWareHouse" Background="Transparent" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Warehouse" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Склад" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenAddToWareHouse" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="BasketFill" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
                             <TextBlock Text="Склад" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>

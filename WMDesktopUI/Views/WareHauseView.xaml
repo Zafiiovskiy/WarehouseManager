@@ -3,17 +3,152 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WMDesktopUI.Views"
+             xmlns:local="clr-namespace:WMDesktopUI.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="BlueViolet">
+             d:DesignHeight="450" d:DesignWidth="800" Background="White">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Gay" Grid.Column="0" Grid.Row="0" FontSize="100"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="0" BorderThickness="1" Margin="5" CornerRadius="4"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="1" BorderThickness="1" Margin="5" CornerRadius="4"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="2" BorderThickness="1" Margin="5" CornerRadius="4"/>
+
+        <Button x:Name="RefreshView" Grid.Row="0" Background="Transparent" HorizontalAlignment="Left" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Refresh" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Оновити таблицю" Margin="0 2 0 0"/>
+            </StackPanel>
+        </Button>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
+            <Button x:Name="SearchByName" Height="30" Width="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
+                <materialDesign:PackIcon Kind="Search" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+            </Button>
+            <TextBox x:Name="SearchBox" MinWidth="100" Background="Transparent" BorderBrush="{x:Null}" FontSize="16"
+                         Margin="10" VerticalAlignment="Center" Foreground="#4e7e92" CaretBrush="#4e7e92" materialDesign:HintAssist.Hint="Шукати"
+                            Style="{StaticResource MaterialDesignTextBox}" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+            <ComboBox SelectedIndex="0" MaxWidth="170" IsEditable="False" Margin="10" SelectedValue ="{Binding SelectedValue}"
+                          materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92" IsSynchronizedWithCurrentItem="True">
+                <TextBlock Text="за Заводським номером" Style="{StaticResource MaterialDesignTextBlock}"/>
+                <TextBlock Text="за Назвою"  Style="{StaticResource MaterialDesignTextBlock}"/>
+                <TextBlock Text="за Сервізом"  Style="{StaticResource MaterialDesignTextBlock}"/>
+                <TextBlock Text="за Типом"  Style="{StaticResource MaterialDesignTextBlock}"/>
+            </ComboBox>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
+            <DataGrid ItemsSource="{Binding WareHouseProducts,Mode=TwoWay}" Grid.Row="1" Margin="10" HorizontalAlignment="Center" 
+                  AutoGenerateColumns="False" CanUserDeleteRows="True" CanUserAddRows="False" >
+
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Background="#4e7e92" VerticalAlignment="Center" BorderBrush="#4e7e92" IsChecked="{Binding Path=Selected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Заводський номер">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=FactoryNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Назва">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть назву" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Сервіз">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Set,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть сервіз" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Тип">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Type,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть тип" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Фото">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Margin="0" MaxWidth="150" MaxHeight="150" Source="{Binding Path=Photo}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Кількість">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Опис">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=ProductDescription,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть особливості" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна купівлі">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat=c,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна продажу">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=SellPrice,Mode=TwoWay,StringFormat=c,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+
+        <Button x:Name="MakeOrder" Grid.Row="2" Background="Transparent" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="LocalShipping" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Оформити замовлення" Margin="0 2 0 0"/>
+            </StackPanel>
+        </Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <Button x:Name="DeleteSelected" Grid.Row="3" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#DDB92B2B" Margin="10" Foreground="#DDB92B2B">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Delete" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                    <TextBlock Text="Видалити обране" Margin="0 2 0 0"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="SaveChanges" Grid.Row="3" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ContentSaveEdit" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                    <TextBlock Text="Зберегти зміни" Margin="0 2 0 0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>
