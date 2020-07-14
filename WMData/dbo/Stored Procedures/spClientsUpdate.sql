@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[spClientsUpdate]
 	@Id int,
-    @PhoneNumber nvarchar(50),
+    @PhoneNumber nvarchar(128),
 	@Name nvarchar(128),
 	@Surname nvarchar(128),
 	@Adress nvarchar(128) 

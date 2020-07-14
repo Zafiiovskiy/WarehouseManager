@@ -2,37 +2,77 @@
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.SqlTypes;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using WMDesktopUI.Events;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Models;
-
+using WMDesktopUI.Views;
 
 namespace WMDesktopUI.ViewModels
 {
-	public class WareHauseViewModel : Conductor<object>
+	public class WareHauseViewModel : Screen
 	{
 		IMapper _mapper;
-		public WareHauseViewModel(IMapper mapper)
+		private WareHouseProductModel modelSums;
+		private IEventAggregator _events;
+		private IWindowManager _windowManager;
+		private MakeOrderViewModel _makeOrdersView;
+		public WareHauseViewModel(IMapper mapper, IEventAggregator events,MakeOrderViewModel makeOrderView,
+			IWindowManager windowManager)
 		{
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_mapper = mapper;
-			LoadProducts();
+			_events = events;
+			_windowManager = windowManager;
+			_makeOrdersView = makeOrderView;
+			modelSums = LoadProducts();
+			SumOfNetPrices = "Сума цін купівлі: "+modelSums.NetPrice.ToString("c");
+			SumOfSellPrices = "Сума цін продажу: "+modelSums.SellPrice.ToString("c");
 		}
-		private void LoadProducts()
+		private WareHouseProductModel LoadProducts()
 		{
 			WareHouseData wareHouseData = new WareHouseData();
 			var wareHouseList = wareHouseData.GetProducts();
 			var products = _mapper.Map<List<WareHouseProductModel>>(wareHouseList);
 			WareHouseProducts = new BindableCollection<WareHouseProductModel>(products);
+			var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice);
+			var sumOfSellPrices = wareHouseList.Sum(x => x.SellPrice);
+			WareHouseProductModel model = new WareHouseProductModel
+			{
+				SellPrice = sumOfSellPrices,
+				NetPrice = sumOfNetPrices
+			};
+			return model;
 		}
 
-		
+		private string _sumOfNetPrices;
+
+		public string SumOfNetPrices
+		{
+			get { return _sumOfNetPrices; }
+			set 
+			{
+				_sumOfNetPrices = value;
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+			}
+		}
+
+		private string _sumOfSellPrices;
+
+		public string SumOfSellPrices
+		{
+			get { return _sumOfSellPrices; }
+			set
+			{
+				_sumOfSellPrices = value;
+				NotifyOfPropertyChange(() => SumOfSellPrices);
+			}
+		}
 
 		private TextBlock _selectedValue;
 
@@ -70,7 +110,6 @@ namespace WMDesktopUI.ViewModels
 			{
 				_wareHouseProducts = value;
 				NotifyOfPropertyChange(() => WareHouseProducts);
-				NotifyOfPropertyChange(() => CanRefreshView);
 			}
 		}
 		
@@ -79,7 +118,9 @@ namespace WMDesktopUI.ViewModels
 
 		public void RefreshView()
 		{
-			LoadProducts();
+			modelSums = LoadProducts();
+			SumOfNetPrices = "Сума цін купівлі = " + modelSums.NetPrice.ToString("c");
+			SumOfSellPrices = "Сума цін продажу = " + modelSums.SellPrice.ToString("c");
 			this.Refresh();
 		}
 		
@@ -171,15 +212,40 @@ namespace WMDesktopUI.ViewModels
 						var productToUpdate = _mapper.Map<WHProductModel>(item);
 						data.UpdateProduct(productToUpdate);
 						item.WasUpdated = false;
+						RefreshView();
 						MessageBox.Show("Зміни успішно збережено");
 					}
 				}
-
-				NotifyOfPropertyChange(() => CanRefreshView);
+				
 			}
 			catch
 			{
 				MessageBox.Show("Щось пішло не так із збереженням змін.");
+			}
+		}
+
+		private BindableCollection<WareHouseProductModel> GetProductsToOrder()
+		{
+			BindableCollection<WareHouseProductModel> output = new BindableCollection<WareHouseProductModel>();
+			foreach (var item in WareHouseProducts)
+			{
+				if (item.Selected)
+				{
+					output.Add(item);
+				}
+			}
+			return output;
+		}
+		public void MakeOrder()
+		{
+			try
+			{
+				_windowManager.ShowWindow(_makeOrdersView);
+				_events.PublishOnUIThread(new OrderEventModel(GetProductsToOrder()));
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.Message);
 			}
 		}
 	}

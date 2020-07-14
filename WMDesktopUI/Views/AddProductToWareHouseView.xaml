@@ -1,5 +1,6 @@
 ﻿<UserControl x:Class="WMDesktopUI.Views.AddProductToWareHouseView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xml:lang="de-DE"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -20,7 +21,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="300"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Border BorderBrush="#2a4e53" Grid.Row="1" BorderThickness="1" Margin="5" CornerRadius="4"/>
@@ -138,12 +139,6 @@
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ContentSave" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
                     <TextBlock Text="Зберегти" Margin="0 2 0 0"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="CloseView" Background="Transparent" BorderBrush="#DDB92B2B" Margin="10" Foreground="#DDB92B2B">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ArrowBack" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
-                    <TextBlock Text="Вийти з вікна" Margin="0 2 0 0"/>
                 </StackPanel>
             </Button>
         </StackPanel>

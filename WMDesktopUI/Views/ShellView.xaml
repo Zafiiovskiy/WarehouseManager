@@ -13,7 +13,7 @@
         Foreground="White"
         FontFamily="{DynamicResource MaterialDesignFont}"
         xmlns:local="clr-namespace:WMDesktopUI.Views" 
-        mc:Ignorable="d" Height="450" Width="800"  WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown" WindowState="{Binding MyWindowState}">
+        mc:Ignorable="d" Height="520" Width="800"  WindowStartupLocation="CenterScreen" WindowStyle="None" MouseDown="Window_MouseDown" WindowState="{Binding MyWindowState}">
 
     <Window.Resources>
         <Storyboard x:Key="MenuOpen">
@@ -114,6 +114,12 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="People" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
                             <TextBlock Text="Клієнти" VerticalAlignment="Center" Margin="20 10"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenAddClients" Background="Transparent" BorderBrush="Transparent">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="PeopleAdd" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <TextBlock Text="Додати клієнтів" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>
                 </ListView>

@@ -3,9 +3,11 @@ using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -22,10 +24,12 @@ namespace WMDesktopUI.ViewModels
         private ToBuyViewModel _toBuyViewModel;
         private ClientsViewModel _clientsViewModel;
         private AddProductToWareHouseViewModel _addProductToWareHouseViewModel;
+        private AddClientsViewModel _addClientsViewModel;
 
         public ShellViewModel(WareHauseViewModel wareHauseViewModel, OrdersViewModel ordersViewModel,
             HistoryViewModel historyViewModel, ToBuyViewModel toBuyViewModel, ClientsViewModel clientsViewModel,
-            IEventAggregator events, AddProductToWareHouseViewModel addProductToWareHouseViewModel)
+            IEventAggregator events, AddProductToWareHouseViewModel addProductToWareHouseViewModel,
+            AddClientsViewModel addClientsViewModel)
         {
             _events = events;
             _wareHauseViewModel = wareHauseViewModel;
@@ -34,6 +38,7 @@ namespace WMDesktopUI.ViewModels
             _historyViewModel = historyViewModel;
             _toBuyViewModel = toBuyViewModel;
             _clientsViewModel = clientsViewModel;
+            _addClientsViewModel = addClientsViewModel;
             WindowMaximizeButtonVisibility = Visibility.Collapsed;
             MyWindowState = WindowState.Maximized;
             ActivateItem(_wareHauseViewModel);
@@ -96,6 +101,10 @@ namespace WMDesktopUI.ViewModels
         {
             ActivateItem(_clientsViewModel);
         }
+        public void OpenAddClients()
+        {
+            ActivateItem(_addClientsViewModel);
+        }
         public void OpenAddToWareHouse()
         {
             ActivateItem(_addProductToWareHouseViewModel);
@@ -111,7 +120,6 @@ namespace WMDesktopUI.ViewModels
                 Application.Current.Shutdown();
             }
         }
-
         public void GoMinScreen()
         {
             WindowMinimizeButtonVisibility = Visibility.Collapsed;
@@ -124,7 +132,6 @@ namespace WMDesktopUI.ViewModels
             WindowMaximizeButtonVisibility = Visibility.Collapsed;
             MyWindowState = WindowState.Maximized;
         }
-
         public void GoRoll()
         {
             MyWindowState =  WindowState.Minimized;

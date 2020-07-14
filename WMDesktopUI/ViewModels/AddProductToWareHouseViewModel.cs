@@ -182,9 +182,5 @@ namespace WMDesktopUI.ViewModels
 			}
 			ProductsToAdd = notDeleted;
 		}
-		public void CloseView()
-		{
-			this.TryClose();
-		}
 	}
 }
