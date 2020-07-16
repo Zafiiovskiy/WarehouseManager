@@ -35,6 +35,9 @@ namespace WMDesktopUI
                 cfg.CreateMap<CModel, ClientModel>();
                 cfg.CreateMap<ClientModel, CModel>();
                 cfg.CreateMap<ClientModel, CPostModel>();
+
+                cfg.CreateMap<OrderModel, OPostModel>();
+                cfg.CreateMap<OrderModel, OReverseModel>();
             });
 
             var mapper = config.CreateMapper();

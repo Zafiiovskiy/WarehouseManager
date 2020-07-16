@@ -36,7 +36,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right">
-            <Button x:Name="SearchByName" ToolTip="Шукати" Height="30" Width="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
+            <Button x:Name="SearchByName" ToolTip="Шукати клієнтів" Height="30" Width="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
                 <materialDesign:PackIcon Kind="Search" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
             </Button>
             <TextBox x:Name="SearchBox" MinWidth="100" Background="Transparent" BorderBrush="{x:Null}" FontSize="16"
@@ -52,7 +52,7 @@
 
         <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
             <DataGrid ItemsSource="{Binding ProductsForOrder,Mode=TwoWay}" Grid.Row="1" Margin="10" HorizontalAlignment="Center" 
-                  AutoGenerateColumns="False" CanUserDeleteRows="True" CanUserAddRows="False" >
+                  AutoGenerateColumns="False" CanUserDeleteRows="True" CanUserAddRows="False" MaxHeight="360">
 
 
                 <DataGrid.Columns>
@@ -111,6 +111,10 @@
             <TextBlock x:Name="SelectedClientString" Margin="5" Foreground="#2a4e53"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="RefreshSums" ToolTip="Оновити суми" Height="20" Width="20" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
+                <materialDesign:PackIcon Kind="Refresh" Margin="0" Width="15" Height="15" VerticalAlignment="Center" />
+
+            </Button>
             <TextBlock x:Name="SumOfNetPrices" Margin="5" Foreground="#2a4e53"/>
             <TextBlock x:Name="SumOfSellPrices" Margin="5" Foreground="#2a4e53"/>
             <TextBlock x:Name="Profit" Margin="5" Foreground="#2a4e53"/>

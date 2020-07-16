@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using WMDesktopUI.Events;
 using WMDesktopUI.Library.DataManaging.DataAccess;
+using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
@@ -25,14 +26,12 @@ namespace WMDesktopUI.ViewModels
 			_events = events;
 			_mapper = mapper;
 			_events.Subscribe(this);
-
-			
 		}
 		private WareHouseProductModel CountSums()
 		{
 			
-			var sumOfNetPrices = ProductsForOrder.Sum(x => x.NetPrice);
-			var sumOfSellPrices = ProductsForOrder.Sum(x => x.SellPrice);
+			var sumOfNetPrices = ProductsForOrder.Sum(x => x.NetPrice * x.QuantityInStock);
+			var sumOfSellPrices = ProductsForOrder.Sum(x => x.SellPrice * x.QuantityInStock);
 			WareHouseProductModel model = new WareHouseProductModel
 			{
 				SellPrice = sumOfSellPrices,
@@ -127,6 +126,8 @@ namespace WMDesktopUI.ViewModels
 			{
 				_productsForOrder = value;
 				NotifyOfPropertyChange(() => ProductsForOrder);
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+				NotifyOfPropertyChange(() => SumOfSellPrices);
 			}
 		}
 
@@ -217,20 +218,72 @@ namespace WMDesktopUI.ViewModels
 			}
 		}
 
+		public void RefreshSums()
+		{
+			modelSums = CountSums();
+			SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
+			SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");
+			Profit = "Прибуток: " + (modelSums.SellPrice - modelSums.NetPrice).ToString("c");
+		}
 		public bool CanMakeOrder
 		{
 			get
 			{
+				bool result = true;
 				if(SelectedClient != null)
 				{
-					return true;
+					result = true;
 				}
-				return false;
+				else
+				{
+					result = false;
+				}
+				return result;
 			}
 		}
 		public void MakeOrder()
 		{
-
+			bool isOrdarable = true;
+			for (int i = 0; i < ProductsForOrder.Count; i++)
+			{
+				if (MaxQuantityInStock[i] < ProductsForOrder[i].QuantityInStock || ProductsForOrder[i].QuantityInStock == 0)
+				{
+					isOrdarable = false;
+					MessageBox.Show($"Кількість товару '{ProductsForOrder[i].Name}' рівна нулю або перевищує кількість на складі.");
+				}
+			}
+			if (isOrdarable)
+			{
+				try
+				{
+					OrdersData data = new OrdersData();
+					List<OrderModel> orderModels = new List<OrderModel>();
+					foreach (var item in ProductsForOrder)
+					{
+						OrderModel order = new OrderModel()
+						{
+							ProductId = item.ProductId,
+							ProductQuantity = item.QuantityInStock,
+							ProductNetPrice = item.NetPrice,
+							ProductSellPrice = item.SellPrice,
+							ClientId = SelectedClient.Id
+						};
+						orderModels.Add(order);
+					}
+					var orders = _mapper.Map<List<OPostModel>>(orderModels);
+					foreach (var item in orders)
+					{
+						data.PostOrder(item);
+					}
+					MessageBox.Show("Покупку успішно додано.");
+					_events.PublishOnUIThread(new OrderMadeEventModel());
+					this.TryClose();
+				}
+				catch(Exception ex)
+				{
+					MessageBox.Show(ex.Message);
+				}
+			}
 		}
 
 		public void LoadClients()
@@ -239,10 +292,22 @@ namespace WMDesktopUI.ViewModels
 			var clients = data.GetClients();
 			Clients = _mapper.Map<BindableCollection<ClientModel>>(clients);
 		}
+		public void LoadMaxQuantities()
+		{
+			foreach (var item in ProductsForOrder)
+			{
+				MaxQuantityInStock.Add(item.QuantityInStock);
+				item.QuantityInStock = 0;
+			}
+		}
+
+		private List<int> MaxQuantityInStock = new List<int>();
+
 		public void Handle(OrderEventModel order)
 		{
 			LoadClients();
 			ProductsForOrder = order.OrderProducts;
+			LoadMaxQuantities();
 			modelSums = CountSums();
 			SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
 			SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");

@@ -1,17 +1,7 @@
-﻿using AutoMapper;
-using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Runtime;
-using System.Text;
-using System.Threading;
+﻿using Caliburn.Micro;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using WMDesktopUI.Views;
+using WMDesktopUI.Events;
 
 namespace WMDesktopUI.ViewModels
 {
@@ -81,12 +71,14 @@ namespace WMDesktopUI.ViewModels
 
 
 
-        public void OpenWareHouse()
+        public async Task OpenWareHouse()
         {
+            await _events.PublishOnUIThreadAsync(new OpenWareHouseEvent());
             ActivateItem(_wareHauseViewModel);
         }
-        public void OpenOrders()
+        public async Task OpenOrders()
         {
+            await _events.PublishOnUIThreadAsync(new OpenOrdersEvent());
             ActivateItem(_ordersViewModel);
         }
         public void OpenHistory()
@@ -97,8 +89,9 @@ namespace WMDesktopUI.ViewModels
         {
             ActivateItem(_toBuyViewModel);
         }
-        public void OpenClients()
+        public async Task OpenClients()
         {
+            await _events.PublishOnUIThreadAsync(new OpenClientsEvent());
             ActivateItem(_clientsViewModel);
         }
         public void OpenAddClients()

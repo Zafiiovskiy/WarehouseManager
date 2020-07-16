@@ -6,5 +6,5 @@
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.Clients VALUES(@PhoneNumber,@Name,@Surname,@Adress);
+	INSERT INTO dbo.Clients(PhoneNumber,[Name],Surname,Adress) VALUES(@PhoneNumber,@Name,@Surname,@Adress);
 END

@@ -12,6 +12,12 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             var output = sql.LoadData<CModel, dynamic>("dbo.spClientsGetAll", new { }, "WMData");
             return output;
         }
+        public List<CModel> GetClientsHaveOrders()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+            var output = sql.LoadData<CModel, dynamic>("dbo.spClientsGetHaveOrders", new { }, "WMData");
+            return output;
+        }
         public void PostClient(CPostModel model)
         {
             SqlDataAccess sql = new SqlDataAccess();

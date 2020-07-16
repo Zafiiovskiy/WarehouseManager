@@ -9,5 +9,6 @@
     [QuantityInStock] INT NOT NULL DEFAULT 1, 
     [ProductDescription] NVARCHAR(MAX) NULL, 
     [NetPrice] MONEY NOT NULL DEFAULT 0, 
-    [SellPrice] MONEY NOT NULL DEFAULT 0  
+    [SellPrice] MONEY NOT NULL DEFAULT 0, 
+    [IsOrdered] BIT NOT NULL DEFAULT 0  
 )

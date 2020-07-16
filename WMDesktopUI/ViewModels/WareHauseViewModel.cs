@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WMDesktopUI.Events;
@@ -15,7 +16,7 @@ using WMDesktopUI.Views;
 
 namespace WMDesktopUI.ViewModels
 {
-	public class WareHauseViewModel : Screen
+	public class WareHauseViewModel : Screen, IHandle<OrderMadeEventModel>, IHandle<OpenWareHouseEvent>
 	{
 		IMapper _mapper;
 		private WareHouseProductModel modelSums;
@@ -28,6 +29,7 @@ namespace WMDesktopUI.ViewModels
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_mapper = mapper;
 			_events = events;
+			_events.Subscribe(this);
 			_windowManager = windowManager;
 			_makeOrdersView = makeOrderView;
 			modelSums = LoadProducts();
@@ -40,8 +42,8 @@ namespace WMDesktopUI.ViewModels
 			var wareHouseList = wareHouseData.GetProducts();
 			var products = _mapper.Map<List<WareHouseProductModel>>(wareHouseList);
 			WareHouseProducts = new BindableCollection<WareHouseProductModel>(products);
-			var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice);
-			var sumOfSellPrices = wareHouseList.Sum(x => x.SellPrice);
+			var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice * x.QuantityInStock);
+			var sumOfSellPrices = wareHouseList.Sum(x => x.SellPrice * x.QuantityInStock);
 			WareHouseProductModel model = new WareHouseProductModel
 			{
 				SellPrice = sumOfSellPrices,
@@ -86,9 +88,6 @@ namespace WMDesktopUI.ViewModels
 			}
 		}
 
-
-
-
 		private string _searchBox;
 
 		public string SearchBox
@@ -110,6 +109,8 @@ namespace WMDesktopUI.ViewModels
 			{
 				_wareHouseProducts = value;
 				NotifyOfPropertyChange(() => WareHouseProducts);
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+				NotifyOfPropertyChange(() => SumOfSellPrices);
 			}
 		}
 		
@@ -213,10 +214,11 @@ namespace WMDesktopUI.ViewModels
 						data.UpdateProduct(productToUpdate);
 						item.WasUpdated = false;
 						RefreshView();
-						MessageBox.Show("Зміни успішно збережено");
 					}
 				}
-				
+
+				MessageBox.Show("Зміни успішно збережено");
+
 			}
 			catch
 			{
@@ -236,17 +238,27 @@ namespace WMDesktopUI.ViewModels
 			}
 			return output;
 		}
-		public void MakeOrder()
+		public async Task MakeOrder()
 		{
 			try
 			{
 				_windowManager.ShowWindow(_makeOrdersView);
-				_events.PublishOnUIThread(new OrderEventModel(GetProductsToOrder()));
+				await _events.PublishOnUIThreadAsync(new OrderEventModel(GetProductsToOrder()));
 			}
 			catch(Exception ex)
 			{
 				MessageBox.Show(ex.Message);
 			}
+		}
+
+		public void Handle(OrderMadeEventModel message)
+		{
+			RefreshView();
+		}
+
+		public void Handle(OpenWareHouseEvent message)
+		{
+			RefreshView();
 		}
 	}
 }

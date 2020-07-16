@@ -88,14 +88,14 @@
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenAddToWareHouse" Background="Transparent" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="BasketFill" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
-                            <TextBlock Text="Склад" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Додати товар" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>
 
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenOrders" Background="Transparent" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Cart" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
-                            <TextBlock Text="Замовлення" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Покупки" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenHistory" Background="Transparent" BorderBrush="Transparent">
@@ -107,7 +107,7 @@
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenToBuy" Background="Transparent" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="CartAdd" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
-                            <TextBlock Text="Докупити" VerticalAlignment="Center" Margin="20 10"/>
+                            <TextBlock Text="Замовлення" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenClients" Background="Transparent" BorderBrush="Transparent">
