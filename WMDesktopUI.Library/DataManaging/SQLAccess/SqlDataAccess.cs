@@ -56,7 +56,7 @@ namespace WMDesktopUI.Library.DataManaging.SQLAccess
                         (storedProcedure, parameters, commandType: CommandType.StoredProcedure);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new DataException($"SaveData could't run {storedProcedure} with parameters [{parameters.ToString()}] to database {connectionStringName}", ex);
             }

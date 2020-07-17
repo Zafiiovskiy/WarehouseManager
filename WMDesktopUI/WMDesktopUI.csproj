@@ -148,7 +148,9 @@
     <Compile Include="Events\OrderDetailsEventModel.cs" />
     <Compile Include="Events\OrderEventModel.cs" />
     <Compile Include="Events\OrderMadeEventModel.cs" />
+    <Compile Include="Helpers\ConvertHelper.cs" />
     <Compile Include="Helpers\DelegateCommandHelper.cs" />
+    <Compile Include="Helpers\InputHelper.cs" />
     <Compile Include="Models\ClientModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\WareHouseProductModel.cs" />

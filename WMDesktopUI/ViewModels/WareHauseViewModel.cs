@@ -235,7 +235,7 @@ namespace WMDesktopUI.ViewModels
 				MessageBox.Show("Зміни успішно збережено");
 
 			}
-			catch
+			catch (Exception ex)
 			{
 
 				MessageBox.Show("Message: \n" + ex.Message + '\n' +
