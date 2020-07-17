@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WMDesktopUI.Events;
@@ -17,7 +15,7 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-    public class OrderDetailsViewModel : Screen, IHandle<OrderDetailsEventModel>
+	public class OrderDetailsViewModel : Screen, IHandle<OrderDetailsEventModel>
     {
 		IMapper _mapper;
 		private WareHouseProductModel modelSums;
@@ -68,7 +66,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
@@ -233,7 +233,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 	}

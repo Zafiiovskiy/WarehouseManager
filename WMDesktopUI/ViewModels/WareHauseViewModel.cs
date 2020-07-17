@@ -38,18 +38,33 @@ namespace WMDesktopUI.ViewModels
 		}
 		private WareHouseProductModel LoadProducts()
 		{
-			WareHouseData wareHouseData = new WareHouseData();
-			var wareHouseList = wareHouseData.GetProducts();
-			var products = _mapper.Map<List<WareHouseProductModel>>(wareHouseList);
-			WareHouseProducts = new BindableCollection<WareHouseProductModel>(products);
-			var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice * x.QuantityInStock);
-			var sumOfSellPrices = wareHouseList.Sum(x => x.SellPrice * x.QuantityInStock);
-			WareHouseProductModel model = new WareHouseProductModel
+			try
 			{
-				SellPrice = sumOfSellPrices,
-				NetPrice = sumOfNetPrices
-			};
-			return model;
+				WareHouseData wareHouseData = new WareHouseData();
+				var wareHouseList = wareHouseData.GetProducts();
+				var products = _mapper.Map<List<WareHouseProductModel>>(wareHouseList);
+				WareHouseProducts = new BindableCollection<WareHouseProductModel>(products);
+				var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice * x.QuantityInStock);
+				var sumOfSellPrices = wareHouseList.Sum(x => x.SellPrice * x.QuantityInStock);
+				WareHouseProductModel model = new WareHouseProductModel
+				{
+					SellPrice = sumOfSellPrices,
+					NetPrice = sumOfNetPrices
+				};
+				return model;
+			}
+			catch (Exception ex)
+			{
+
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
+				return new WareHouseProductModel
+				{
+					SellPrice = 0,
+					NetPrice = 0
+				};
+			}
 		}
 
 		private string _sumOfNetPrices;
@@ -222,7 +237,10 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch
 			{
-				MessageBox.Show("Щось пішло не так із збереженням змін.");
+
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 

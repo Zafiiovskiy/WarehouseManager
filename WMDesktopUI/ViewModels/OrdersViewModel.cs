@@ -81,7 +81,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
@@ -108,7 +110,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 			
 		}
@@ -166,7 +170,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
@@ -180,7 +186,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
@@ -264,7 +272,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 

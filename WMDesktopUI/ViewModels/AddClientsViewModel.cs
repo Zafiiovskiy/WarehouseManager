@@ -2,19 +2,14 @@
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-    public class AddClientsViewModel: Screen
+	public class AddClientsViewModel: Screen
     {
 		private BindableCollection<ClientModel> _clientsToAdd = new BindableCollection<ClientModel>();
 		IMapper _mapper;
@@ -107,7 +102,9 @@ namespace WMDesktopUI.ViewModels
 				}
 				catch(Exception ex)
 				{
-					MessageBox.Show(ex.Message);
+					MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 				}
 			}
 		}

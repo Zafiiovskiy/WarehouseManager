@@ -281,16 +281,27 @@ namespace WMDesktopUI.ViewModels
 				}
 				catch(Exception ex)
 				{
-					MessageBox.Show(ex.Message);
+					MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 				}
 			}
 		}
 
 		public void LoadClients()
 		{
-			ClientsData data = new ClientsData();
-			var clients = data.GetClients();
-			Clients = _mapper.Map<BindableCollection<ClientModel>>(clients);
+			try
+			{
+				ClientsData data = new ClientsData();
+				var clients = data.GetClients();
+				Clients = _mapper.Map<BindableCollection<ClientModel>>(clients);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
+			}
 		}
 		public void LoadMaxQuantities()
 		{

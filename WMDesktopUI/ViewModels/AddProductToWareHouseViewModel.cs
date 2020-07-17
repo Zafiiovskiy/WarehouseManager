@@ -157,13 +157,22 @@ namespace WMDesktopUI.ViewModels
 		{
 			if (CanAddProducts)
 			{
-				WareHouseData wareHouseData = new WareHouseData();
-				var productsToAdd = new List<WareHouseProductModel>(ProductsToAdd);
-				var products = _mapper.Map<List<WHPostProductModel>>(productsToAdd);
-				products.ForEach(prod => wareHouseData.PostProduct(prod));
-				ProductsToAdd.Clear();
-				LoadPlaceholder();
-				MessageBox.Show("Товар успішно додано.");
+				try
+				{
+					WareHouseData wareHouseData = new WareHouseData();
+					var productsToAdd = new List<WareHouseProductModel>(ProductsToAdd);
+					var products = _mapper.Map<List<WHPostProductModel>>(productsToAdd);
+					products.ForEach(prod => wareHouseData.PostProduct(prod));
+					ProductsToAdd.Clear();
+					LoadPlaceholder();
+					MessageBox.Show("Товар успішно додано.");
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
+				}
 			}
 		}
 		public void AddRow()

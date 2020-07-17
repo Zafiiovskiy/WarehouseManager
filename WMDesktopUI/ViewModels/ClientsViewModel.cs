@@ -27,10 +27,19 @@ namespace WMDesktopUI.ViewModels
 		}
 		private void LoadClients()
 		{
-			ClientsData clientsData = new ClientsData();
-			var wareHouseList = clientsData.GetClients();
-			var clients = _mapper.Map<List<ClientModel>>(wareHouseList);
-			Clients = new BindableCollection<ClientModel>(clients);
+			try
+			{
+				ClientsData clientsData = new ClientsData();
+				var wareHouseList = clientsData.GetClients();
+				var clients = _mapper.Map<List<ClientModel>>(wareHouseList);
+				Clients = new BindableCollection<ClientModel>(clients);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
+			}
 		}
 
 
@@ -87,7 +96,9 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
@@ -192,9 +203,11 @@ namespace WMDesktopUI.ViewModels
 				MessageBox.Show("Зміни успішно збережено");
 
 			}
-			catch
+			catch (Exception ex)
 			{
-				MessageBox.Show("Щось пішло не так із збереженням змін.");
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
