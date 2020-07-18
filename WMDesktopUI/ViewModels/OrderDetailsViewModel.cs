@@ -18,8 +18,25 @@ namespace WMDesktopUI.ViewModels
 	public class OrderDetailsViewModel : Screen, IHandle<OrderDetailsEventModel>
     {
 		IMapper _mapper;
-		private WareHouseProductModel modelSums;
 		private IEventAggregator _events;
+		/// <summary>
+		/// Private backing fields
+		/// </summary>
+		private WareHouseProductModel modelSums;
+		private DelegateCommandHelper _command;
+		private ClientModel _selectedClient;
+		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
+		private BindableCollection<WareHouseProductModel> _productsForOrder = new BindableCollection<WareHouseProductModel>();
+		private string _sumOfSellPrices;
+		private string _sumOfNetPrices;
+		private string _profit;
+
+		/// <summary>
+		/// Private fields
+		/// </summary>
+		private List<int> MaxQuantityInStock = new List<int>();
+
+
 		public OrderDetailsViewModel(IEventAggregator events, IMapper mapper)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
@@ -28,6 +45,85 @@ namespace WMDesktopUI.ViewModels
 			_events.Subscribe(this);
 		}
 
+		/// <summary>
+		/// Public fields
+		/// </summary>
+		public ClientModel SelectedClient
+		{
+			get { return _selectedClient; }
+			set
+			{
+				_selectedClient = value;
+				NotifyOfPropertyChange(() => SelectedClient);
+				NotifyOfPropertyChange(() => SelectedClientString);
+			}
+		}
+		public string SelectedClientString
+		{
+			get
+			{
+				if (SelectedClient == null)
+				{
+					return "Оберіть клієнта";
+				}
+				return $"Клієнт: ({SelectedClient.PhoneNumber}) - {SelectedClient.Name} {SelectedClient.Surname}";
+			}
+			set
+			{
+				NotifyOfPropertyChange(() => SelectedClientString);
+			}
+		}
+		public string Profit
+		{
+			get { return _profit; }
+			set
+			{
+				_profit = value;
+				NotifyOfPropertyChange(() => Profit);
+			}
+		}
+		public string SumOfNetPrices
+		{
+			get { return _sumOfNetPrices; }
+			set
+			{
+				_sumOfNetPrices = value;
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+			}
+		}
+		public string SumOfSellPrices
+		{
+			get { return _sumOfSellPrices; }
+			set
+			{
+				_sumOfSellPrices = value;
+				NotifyOfPropertyChange(() => SumOfSellPrices);
+			}
+		}
+		public BindableCollection<ClientModel> Clients
+		{
+			get { return _clients; }
+			set
+			{
+				_clients = value;
+				NotifyOfPropertyChange(() => Clients);
+			}
+		}
+		public BindableCollection<WareHouseProductModel> ProductsForOrder
+		{
+			get { return _productsForOrder; }
+			set
+			{
+				_productsForOrder = value;
+				NotifyOfPropertyChange(() => ProductsForOrder);
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+				NotifyOfPropertyChange(() => SumOfSellPrices);
+			}
+		}
+
+		/// <summary>
+		/// Commands
+		/// </summary>
 		public ICommand ReverseOrder
 		{
 			get
@@ -52,13 +148,13 @@ namespace WMDesktopUI.ViewModels
 				BindableCollection<WareHouseProductModel> found = new BindableCollection<WareHouseProductModel>();
 				foreach (var item in ProductsForOrder)
 				{
-					if(item.ProductId != product.ProductId)
+					if (item.ProductId != product.ProductId)
 					{
 						found.Add(item);
 					}
 				}
 				ProductsForOrder = found;
-				if(ProductsForOrder.Count == 0)
+				if (ProductsForOrder.Count == 0)
 				{
 					this.TryClose();
 					_events.PublishOnUIThread(new OrderAllProductsDeletedEventModel());
@@ -71,13 +167,14 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-
-
 		private bool CanExecute(object obj)
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// Methods
+		/// </summary>
 		private WareHouseProductModel CountSums()
 		{
 
@@ -90,106 +187,22 @@ namespace WMDesktopUI.ViewModels
 			};
 			return model;
 		}
-
-		private ClientModel _selectedClient;
-
-		public ClientModel SelectedClient
-		{
-			get { return _selectedClient; }
-			set
-			{
-				_selectedClient = value;
-				NotifyOfPropertyChange(() => SelectedClient);
-				NotifyOfPropertyChange(() => SelectedClientString);
-			}
-		}
-
-		public string SelectedClientString
-		{
-			get
-			{
-				if (SelectedClient == null)
-				{
-					return "Оберіть клієнта";
-				}
-				return $"Клієнт: ({SelectedClient.PhoneNumber}) - {SelectedClient.Name} {SelectedClient.Surname}";
-			}
-			set
-			{
-				NotifyOfPropertyChange(() => SelectedClientString);
-			}
-		}
-		private string _profit;
-
-		public string Profit
-		{
-			get { return _profit; }
-			set
-			{
-				_profit = value;
-				NotifyOfPropertyChange(() => Profit);
-			}
-		}
-
-		private string _sumOfNetPrices;
-
-		public string SumOfNetPrices
-		{
-			get { return _sumOfNetPrices; }
-			set
-			{
-				_sumOfNetPrices = value;
-				NotifyOfPropertyChange(() => SumOfNetPrices);
-			}
-		}
-
-		private string _sumOfSellPrices;
-
-		public string SumOfSellPrices
-		{
-			get { return _sumOfSellPrices; }
-			set
-			{
-				_sumOfSellPrices = value;
-				NotifyOfPropertyChange(() => SumOfSellPrices);
-			}
-		}
-
-		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
-
-		public BindableCollection<ClientModel> Clients
-		{
-			get { return _clients; }
-			set
-			{
-				_clients = value;
-				NotifyOfPropertyChange(() => Clients);
-			}
-		}
-
-		private BindableCollection<WareHouseProductModel> _productsForOrder = new BindableCollection<WareHouseProductModel>();
-
-		public BindableCollection<WareHouseProductModel> ProductsForOrder
-		{
-			get { return _productsForOrder; }
-			set
-			{
-				_productsForOrder = value;
-				NotifyOfPropertyChange(() => ProductsForOrder);
-				NotifyOfPropertyChange(() => SumOfNetPrices);
-				NotifyOfPropertyChange(() => SumOfSellPrices);
-			}
-		}
-
-
 		public void RefreshSums()
 		{
-			modelSums = CountSums();
-			SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
-			SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");
-			Profit = "Прибуток: " + (modelSums.SellPrice - modelSums.NetPrice).ToString("c");
+			try
+			{
+				modelSums = CountSums();
+				SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
+				SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");
+				Profit = "Прибуток: " + (modelSums.SellPrice - modelSums.NetPrice).ToString("c");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
+			}
 		}
-
 		public void LoadMaxQuantities()
 		{
 			foreach (var item in ProductsForOrder)
@@ -212,12 +225,15 @@ namespace WMDesktopUI.ViewModels
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
-		private List<int> MaxQuantityInStock = new List<int>();
-		private DelegateCommandHelper _command;
 
+		/// <summary>
+		/// Event handlers
+		/// </summary>
 		public void Handle(OrderDetailsEventModel order)
 		{
 			try

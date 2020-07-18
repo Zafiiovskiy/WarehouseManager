@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WMDesktopUI.Events;
+using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
@@ -16,8 +17,13 @@ namespace WMDesktopUI.ViewModels
 {
     public class ClientsViewModel : Screen, IHandle<OpenClientsEvent>
     {
-		IMapper _mapper;
+		private IMapper _mapper;
 		private IEventAggregator _events;
+		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
+		private TextBlock _selectedValue;
+		private string _searchBox;
+
+
 		public ClientsViewModel(IMapper mapper, IEventAggregator events)
 		{
 			_events = events;
@@ -25,6 +31,37 @@ namespace WMDesktopUI.ViewModels
 			_mapper = mapper;
 			LoadClients();
 		}
+
+
+		public TextBlock SelectedValue
+		{
+			get { return _selectedValue; }
+			set
+			{
+				_selectedValue = value;
+				NotifyOfPropertyChange(() => SelectedValue);
+			}
+		}
+		public string SearchBox
+		{
+			get { return _searchBox; }
+			set
+			{
+				_searchBox = value;
+				NotifyOfPropertyChange(() => SearchBox);
+			}
+		}
+		public BindableCollection<ClientModel> Clients
+		{
+			get { return _clients; }
+			set
+			{
+				_clients = value;
+				NotifyOfPropertyChange(() => Clients);
+			}
+		}
+
+
 		private void LoadClients()
 		{
 			try
@@ -41,51 +78,6 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-
-
-
-		private TextBlock _selectedValue;
-
-		public TextBlock SelectedValue
-		{
-			get { return _selectedValue; }
-			set
-			{
-				_selectedValue = value;
-				NotifyOfPropertyChange(() => SelectedValue);
-			}
-		}
-
-
-
-
-		private string _searchBox;
-
-		public string SearchBox
-		{
-			get { return _searchBox; }
-			set
-			{
-				_searchBox = value;
-				NotifyOfPropertyChange(() => SearchBox);
-			}
-		}
-
-		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
-
-		public BindableCollection<ClientModel> Clients
-		{
-			get { return _clients; }
-			set
-			{
-				_clients = value;
-				NotifyOfPropertyChange(() => Clients);
-			}
-		}
-
-
-		///Buttons
-
 		public void RefreshView()
 		{
 			try
@@ -101,83 +93,92 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-
 		public void SearchByName()
 		{
 			try
 			{
-				if (SelectedValue.Text == "за Номером")
+				if (SelectedValue != null)
 				{
-					var found = Clients.Where(x => x.PhoneNumber.ToString().Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
+					if (Clients?.Count > 0)
 					{
-						if (found.Contains(item))
+						if (SelectedValue?.Text == "за Номером")
 						{
-							result.Add(item);
+							var found = Clients.Where(x => x.PhoneNumber.ToString().Contains(SearchBox)).ToList();
+							BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+							foreach (var item in Clients)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								Clients = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вашим запитом.");
+							}
 						}
-					}
-					if (result.Count > 0)
-					{
-						Clients = result;
-					}
-					else
-					{
-						MessageBox.Show("Жодного результату за вашим запитом.");
+						else if (SelectedValue?.Text == "за Ім'ям")
+						{
+							var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
+							BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+							foreach (var item in Clients)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							Clients = result;
+						}
+						else if (SelectedValue?.Text == "за Прізвищем")
+						{
+							var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Surname)).Where(x => x.Surname.Contains(SearchBox)).ToList();
+							BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+							foreach (var item in Clients)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								Clients = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вагим запитом.");
+							}
+						}
+						else if (SelectedValue?.Text == "за Адресою")
+						{
+							var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Adress)).Where(x => x.Adress.Contains(SearchBox)).ToList();
+							BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+							foreach (var item in Clients)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								Clients = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вагим запитом.");
+							}
+						}
 					}
 				}
-				else if (SelectedValue.Text == "за Ім'ям")
+				else
 				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
-					{
-						if (found.Contains(item))
-						{
-							result.Add(item);
-						}
-					}
-					Clients = result;
-				}
-				else if (SelectedValue.Text == "за Прізвищем")
-				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Surname)).Where(x => x.Surname.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
-					{
-						if (found.Contains(item))
-						{
-							result.Add(item);
-						}
-					}
-					if (result.Count > 0)
-					{
-						Clients = result;
-					}
-					else
-					{
-						MessageBox.Show("Жодного результату за вагим запитом.");
-					}
-				}
-				else if (SelectedValue.Text == "за Адресою")
-				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Adress)).Where(x => x.Adress.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
-					{
-						if (found.Contains(item))
-						{
-							result.Add(item);
-						}
-					}
-					if (result.Count > 0)
-					{
-						Clients = result;
-					}
-					else
-					{
-						MessageBox.Show("Жодного результату за вагим запитом.");
-					}
+					MessageBox.Show("Виберіть параметер пошуку.");
 				}
 			}
 			catch(Exception ex)
@@ -194,9 +195,17 @@ namespace WMDesktopUI.ViewModels
 				{
 					if (item.WasUpdated == true)
 					{
-						var clientToUpdate = _mapper.Map<CModel>(item);
-						data.UpdateClient(clientToUpdate);
-						item.WasUpdated = false;
+						if (InputHelper.isCorrectClient(item))
+						{
+							var clientToUpdate = _mapper.Map<CModel>(item);
+							data.UpdateClient(clientToUpdate);
+							item.WasUpdated = false;
+						}
+						else
+						{
+							MessageBox.Show(InputHelper.isWrongClientMessage(item));
+							break;
+						}
 					}
 				}
 
@@ -210,7 +219,6 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-
 		public void Handle(OpenClientsEvent message)
 		{
 			RefreshView();

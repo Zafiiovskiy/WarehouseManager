@@ -17,31 +17,39 @@ namespace WMDesktopUI.ViewModels
 {
 	public class MakeOrderViewModel: Screen, IHandle<OrderEventModel>
     {
-		IMapper _mapper;
-		private WareHouseProductModel modelSums;
+		private IMapper _mapper;
 		private IEventAggregator _events;
+		/// <summary>
+		/// Private backing fields
+		/// </summary>
+		private WareHouseProductModel modelSums;
+		private ClientModel _selectedClient;
+		private string _searchBox;
+		private string _profit;
+		private string _sumOfNetPrices;
+		private string _sumOfSellPrices;
+		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
+		private BindableCollection<WareHouseProductModel> _productsForOrder = new BindableCollection<WareHouseProductModel>();
+		private TextBlock _selectedValue;
+
+		/// <summary>
+		/// Private fields
+		/// </summary>
+		private List<int> MaxQuantityInStock = new List<int>();
+
 		public MakeOrderViewModel(IEventAggregator events,IMapper mapper)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_events = events;
 			_mapper = mapper;
 			_events.Subscribe(this);
-		}
-		private WareHouseProductModel CountSums()
-		{
-			
-			var sumOfNetPrices = ProductsForOrder.Sum(x => x.NetPrice * x.QuantityInStock);
-			var sumOfSellPrices = ProductsForOrder.Sum(x => x.SellPrice * x.QuantityInStock);
-			WareHouseProductModel model = new WareHouseProductModel
-			{
-				SellPrice = sumOfSellPrices,
-				NetPrice = sumOfNetPrices
-			};
-			return model;
+			RefreshSums();
 		}
 
-		private ClientModel _selectedClient;
 
+		/// <summary>
+		/// Public fields
+		/// </summary>
 		public ClientModel SelectedClient
 		{
 			get { return _selectedClient; }
@@ -53,7 +61,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => CanMakeOrder);
 			}
 		}
-
 		public string SelectedClientString
 		{
 			get 
@@ -69,8 +76,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SelectedClientString);
 			}
 		}
-		private string _profit;
-
 		public string Profit
 		{
 			get { return _profit; }
@@ -80,9 +85,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => Profit);
 			}
 		}
-
-		private string _sumOfNetPrices;
-
 		public string SumOfNetPrices
 		{
 			get { return _sumOfNetPrices; }
@@ -92,9 +94,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SumOfNetPrices);
 			}
 		}
-
-		private string _sumOfSellPrices;
-
 		public string SumOfSellPrices
 		{
 			get { return _sumOfSellPrices; }
@@ -104,9 +103,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SumOfSellPrices);
 			}
 		}
-
-		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
-
 		public BindableCollection<ClientModel> Clients
 		{
 			get { return _clients; }
@@ -116,9 +112,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => Clients);
 			}
 		}
-
-		private BindableCollection<WareHouseProductModel> _productsForOrder = new BindableCollection<WareHouseProductModel>();
-
 		public BindableCollection<WareHouseProductModel> ProductsForOrder
 		{
 			get { return _productsForOrder; }
@@ -130,9 +123,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SumOfSellPrices);
 			}
 		}
-
-		private TextBlock _selectedValue;
-
 		public TextBlock SelectedValue
 		{
 			get { return _selectedValue; }
@@ -142,9 +132,6 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SelectedValue);
 			}
 		}
-
-		private string _searchBox;
-
 		public string SearchBox
 		{
 			get { return _searchBox; }
@@ -154,62 +141,86 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SearchBox);
 			}
 		}
+
+
+		/// <summary>
+		/// Methods 
+		/// </summary>
+		private WareHouseProductModel CountSums()
+		{
+
+			var sumOfNetPrices = ProductsForOrder.Sum(x => x.NetPrice * x.QuantityInStock);
+			var sumOfSellPrices = ProductsForOrder.Sum(x => x.SellPrice * x.QuantityInStock);
+			WareHouseProductModel model = new WareHouseProductModel
+			{
+				SellPrice = sumOfSellPrices,
+				NetPrice = sumOfNetPrices
+			};
+			return model;
+		}
 		public void SearchByName()
 		{
 			try
 			{
-				if (SelectedValue.Text == "за Номером")
+				if (Clients != null)
 				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.PhoneNumber.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
+					if (SelectedValue?.Text == "за Номером")
 					{
-						if (found.Contains(item))
+						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.PhoneNumber.Contains(SearchBox)).ToList();
+						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						foreach (var item in Clients)
 						{
-							result.Add(item);
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						if (result.Count > 0)
+						{
+							Clients = result;
+						}
+						else
+						{
+							MessageBox.Show("Жодного результату за вашим запитом.");
 						}
 					}
-					if (result.Count > 0)
+					else if (SelectedValue?.Text == "за Ім'ям")
 					{
+						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
+						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						foreach (var item in Clients)
+						{
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
 						Clients = result;
 					}
-					else
+					else if (SelectedValue?.Text == "за Прізвищем")
 					{
-						MessageBox.Show("Жодного результату за вашим запитом.");
-					}
-				}
-				else if (SelectedValue.Text == "за Ім'ям")
-				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
-					{
-						if (found.Contains(item))
+						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Surname)).Where(x => x.Surname.Contains(SearchBox)).ToList();
+						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						foreach (var item in Clients)
 						{
-							result.Add(item);
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						if (result.Count > 0)
+						{
+							Clients = result;
+						}
+						else
+						{
+							MessageBox.Show("Жодного результату за вагим запитом.");
 						}
 					}
-					Clients = result;
 				}
-				else if (SelectedValue.Text == "за Прізвищем")
+				else
 				{
-					var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Surname)).Where(x => x.Surname.Contains(SearchBox)).ToList();
-					BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
-					foreach (var item in Clients)
-					{
-						if (found.Contains(item))
-						{
-							result.Add(item);
-						}
-					}
-					if (result.Count > 0)
-					{
-						Clients = result;
-					}
-					else
-					{
-						MessageBox.Show("Жодного результату за вагим запитом.");
-					}
+					MessageBox.Show("Немає клієнтів. Внесіть клієнтів, щоб шукати.");
 				}
 			}
 			catch(Exception ex)
@@ -217,7 +228,6 @@ namespace WMDesktopUI.ViewModels
 				MessageBox.Show(ex.Message);
 			}
 		}
-
 		public void RefreshSums()
 		{
 			modelSums = CountSums();
@@ -246,7 +256,7 @@ namespace WMDesktopUI.ViewModels
 			bool isOrdarable = true;
 			for (int i = 0; i < ProductsForOrder.Count; i++)
 			{
-				if (MaxQuantityInStock[i] < ProductsForOrder[i].QuantityInStock || ProductsForOrder[i].QuantityInStock == 0)
+				if (MaxQuantityInStock[i] < ProductsForOrder[i].QuantityInStock || ProductsForOrder[i].QuantityInStock <= 0)
 				{
 					isOrdarable = false;
 					MessageBox.Show($"Кількість товару '{ProductsForOrder[i].Name}' рівна нулю або перевищує кількість на складі.");
@@ -287,7 +297,6 @@ namespace WMDesktopUI.ViewModels
 				}
 			}
 		}
-
 		public void LoadClients()
 		{
 			try
@@ -312,8 +321,9 @@ namespace WMDesktopUI.ViewModels
 			}
 		}
 
-		private List<int> MaxQuantityInStock = new List<int>();
-
+		/// <summary>
+		/// Event handlers
+		/// </summary>
 		public void Handle(OrderEventModel order)
 		{
 			LoadClients();

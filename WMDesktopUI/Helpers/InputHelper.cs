@@ -128,5 +128,48 @@ namespace WMDesktopUI.Helpers
 			}
 			return true;
 		}
+		public static string isWrongWareHouseProductMassage(WareHouseProductModel wareHouseProductModel)
+		{
+			string message = "Неправильно введено: \n";
+			if (String.IsNullOrEmpty(wareHouseProductModel.FactoryNumber) ||
+				IsDigitsOnly(wareHouseProductModel.FactoryNumber) == false ||
+				wareHouseProductModel.FactoryNumber.Length != 10)
+			{
+				message += $"Заводський номер: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Name))
+			{
+				message += $"Ви забули ввести ім'я: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Set))
+			{
+				message += $"Ви забули ввести сервіз: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Type))
+			{
+				message += $"Ви забули ввести тип: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.Photo == null)
+			{
+				message += $"Ви забули вибрати фото: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.QuantityInStock < 0)
+			{
+				message += $"Неправильно введена кількість: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.ProductDescription))
+			{
+				message += $"Ви забули ввести опис: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.NetPrice <= 0)
+			{
+				message += $"Неправильно введена ціна покупки: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.SellPrice <= 0)
+			{
+				message += $"Неправильно введена ціна продажу: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			return message;
+		}
 	}
 }

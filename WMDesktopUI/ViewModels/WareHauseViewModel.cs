@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WMDesktopUI.Events;
+using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Models;
 using WMDesktopUI.Views;
@@ -19,10 +20,21 @@ namespace WMDesktopUI.ViewModels
 	public class WareHauseViewModel : Screen, IHandle<OrderMadeEventModel>, IHandle<OpenWareHouseEvent>
 	{
 		IMapper _mapper;
-		private WareHouseProductModel modelSums;
 		private IEventAggregator _events;
 		private IWindowManager _windowManager;
 		private MakeOrderViewModel _makeOrdersView;
+
+		/// <summary>
+		/// Private backing fields
+		/// </summary>
+		private WareHouseProductModel modelSums;
+		private string _sumOfNetPrices;
+		private string _sumOfSellPrices;
+		private TextBlock _selectedValue;
+		private string _searchBox;
+		private BindableCollection<WareHouseProductModel> _wareHouseProducts = new BindableCollection<WareHouseProductModel>();
+
+
 		public WareHauseViewModel(IMapper mapper, IEventAggregator events,MakeOrderViewModel makeOrderView,
 			IWindowManager windowManager)
 		{
@@ -33,9 +45,64 @@ namespace WMDesktopUI.ViewModels
 			_windowManager = windowManager;
 			_makeOrdersView = makeOrderView;
 			modelSums = LoadProducts();
-			SumOfNetPrices = "Сума цін купівлі: "+modelSums.NetPrice.ToString("c");
-			SumOfSellPrices = "Сума цін продажу: "+modelSums.SellPrice.ToString("c");
+			SumOfNetPrices = "Сума цін купівлі: "+modelSums?.NetPrice.ToString("c");
+			SumOfSellPrices = "Сума цін продажу: "+modelSums?.SellPrice.ToString("c");
 		}
+
+		/// <summary>
+		/// Public fields
+		/// </summary>
+		public string SumOfNetPrices
+		{
+			get { return _sumOfNetPrices; }
+			set 
+			{
+				_sumOfNetPrices = value;
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+			}
+		}
+		public string SumOfSellPrices
+		{
+			get { return _sumOfSellPrices; }
+			set
+			{
+				_sumOfSellPrices = value;
+				NotifyOfPropertyChange(() => SumOfSellPrices);
+			}
+		}
+		public TextBlock SelectedValue
+		{
+			get { return _selectedValue; }
+			set
+			{
+				_selectedValue = value;
+				NotifyOfPropertyChange(() => SelectedValue);
+			}
+		}
+		public string SearchBox
+		{
+			get { return _searchBox; }
+			set
+			{
+				_searchBox = value;
+				NotifyOfPropertyChange(() => SearchBox);
+			}
+		}
+		public BindableCollection<WareHouseProductModel> WareHouseProducts
+		{
+			get { return _wareHouseProducts; }
+			set
+			{
+				_wareHouseProducts = value;
+				NotifyOfPropertyChange(() => WareHouseProducts);
+				NotifyOfPropertyChange(() => SumOfNetPrices);
+				NotifyOfPropertyChange(() => SumOfSellPrices);
+			}
+		}
+
+		/// <summary>
+		/// Methods
+		/// </summary>
 		private WareHouseProductModel LoadProducts()
 		{
 			try
@@ -66,72 +133,6 @@ namespace WMDesktopUI.ViewModels
 				};
 			}
 		}
-
-		private string _sumOfNetPrices;
-
-		public string SumOfNetPrices
-		{
-			get { return _sumOfNetPrices; }
-			set 
-			{
-				_sumOfNetPrices = value;
-				NotifyOfPropertyChange(() => SumOfNetPrices);
-			}
-		}
-
-		private string _sumOfSellPrices;
-
-		public string SumOfSellPrices
-		{
-			get { return _sumOfSellPrices; }
-			set
-			{
-				_sumOfSellPrices = value;
-				NotifyOfPropertyChange(() => SumOfSellPrices);
-			}
-		}
-
-		private TextBlock _selectedValue;
-
-		public TextBlock SelectedValue
-		{
-			get { return _selectedValue; }
-			set
-			{
-				_selectedValue = value;
-				NotifyOfPropertyChange(() => SelectedValue);
-			}
-		}
-
-		private string _searchBox;
-
-		public string SearchBox
-		{
-			get { return _searchBox; }
-			set
-			{
-				_searchBox = value;
-				NotifyOfPropertyChange(() => SearchBox);
-			}
-		}
-
-		private BindableCollection<WareHouseProductModel> _wareHouseProducts = new BindableCollection<WareHouseProductModel>();
-
-		public BindableCollection<WareHouseProductModel> WareHouseProducts
-		{
-			get { return _wareHouseProducts; }
-			set
-			{
-				_wareHouseProducts = value;
-				NotifyOfPropertyChange(() => WareHouseProducts);
-				NotifyOfPropertyChange(() => SumOfNetPrices);
-				NotifyOfPropertyChange(() => SumOfSellPrices);
-			}
-		}
-		
-
-		///Buttons
-
 		public void RefreshView()
 		{
 			modelSums = LoadProducts();
@@ -139,81 +140,100 @@ namespace WMDesktopUI.ViewModels
 			SumOfSellPrices = "Сума цін продажу = " + modelSums.SellPrice.ToString("c");
 			this.Refresh();
 		}
-		
 		public void SearchByName()
 		{
-			if (SelectedValue.Text == "за Заводським номером")
+			try
 			{
-				var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.FactoryNumber)).Where(x => x.FactoryNumber.Contains(SearchBox)).ToList();
-				BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-				foreach (var item in WareHouseProducts)
+				if (WareHouseProducts?.Count > 0)
 				{
-					if (found.Contains(item))
+					if (SelectedValue?.Text == "за Заводським номером")
 					{
-						result.Add(item);
+						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.FactoryNumber)).Where(x => x.FactoryNumber.Contains(SearchBox)).ToList();
+						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+						foreach (var item in WareHouseProducts)
+						{
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						if (result.Count > 0)
+						{
+							WareHouseProducts = result;
+						}
+						else
+						{
+							MessageBox.Show("Жодного результату за вашим запитом.");
+						}
 					}
-				}
-				if (result.Count > 0)
-				{
-					WareHouseProducts = result;
+					else if (SelectedValue?.Text == "за Назвою")
+					{
+						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
+						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+						foreach (var item in WareHouseProducts)
+						{
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						WareHouseProducts = result;
+					}
+					else if (SelectedValue?.Text == "за Сервізом")
+					{
+						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Set)).Where(x => x.Set.Contains(SearchBox)).ToList();
+						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+						foreach (var item in WareHouseProducts)
+						{
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						if (result.Count > 0)
+						{
+							WareHouseProducts = result;
+						}
+						else
+						{
+							MessageBox.Show("Жодного результату за вагим запитом.");
+						}
+					}
+					else if (SelectedValue?.Text == "за Типом")
+					{
+						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Type)).Where(x => x.Type.Contains(SearchBox)).ToList();
+						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+						foreach (var item in WareHouseProducts)
+						{
+							if (found.Contains(item))
+							{
+								result.Add(item);
+							}
+						}
+						if (result.Count > 0)
+						{
+							WareHouseProducts = result;
+						}
+						else
+						{
+							MessageBox.Show("Жодного результату за вагим запитом.");
+						}
+					}
+					else
+					{
+						MessageBox.Show("Оберіть параметер пошуку.");
+					}
 				}
 				else
 				{
-					MessageBox.Show("Жодного результату за вашим запитом.");
+					MessageBox.Show("Додайте товар, щоб шукати.");
 				}
 			}
-			else if (SelectedValue.Text == "за Назвою")
+			catch (Exception ex)
 			{
-				var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
-				BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-				foreach (var item in WareHouseProducts)
-				{
-					if (found.Contains(item))
-					{
-						result.Add(item);
-					}
-				}
-				WareHouseProducts = result;
-			}
-			else if (SelectedValue.Text == "за Сервізом")
-			{
-				var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Set)).Where(x => x.Set.Contains(SearchBox)).ToList();
-				BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-				foreach (var item in WareHouseProducts)
-				{
-					if (found.Contains(item))
-					{
-						result.Add(item);
-					}
-				}
-				if (result.Count > 0)
-				{
-					WareHouseProducts = result;
-				}
-				else
-				{
-					MessageBox.Show("Жодного результату за вагим запитом.");
-				}
-			}
-			else if(SelectedValue.Text == "за Типом")
-			{
-				var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Type)).Where(x => x.Type.Contains(SearchBox)).ToList();
-				BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-				foreach (var item in WareHouseProducts)
-				{
-					if (found.Contains(item))
-					{
-						result.Add(item);
-					}
-				}
-				if (result.Count > 0)
-				{
-					WareHouseProducts = result;
-				}
-				else
-				{
-					MessageBox.Show("Жодного результату за вагим запитом.");
-				}
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+								"StackTrase: \n" + ex.StackTrace + '\n' +
+								"InnerException: \n" + ex.InnerException);
 			}
 		}
 		public void SaveChanges()
@@ -225,10 +245,18 @@ namespace WMDesktopUI.ViewModels
 				{
 					if (item.WasUpdated == true)
 					{
-						var productToUpdate = _mapper.Map<WHProductModel>(item);
-						data.UpdateProduct(productToUpdate);
-						item.WasUpdated = false;
-						RefreshView();
+						if (InputHelper.isCorrectWareHouseProduct(item))
+						{
+							var productToUpdate = _mapper.Map<WHProductModel>(item);
+							data.UpdateProduct(productToUpdate);
+							item.WasUpdated = false;
+							RefreshView();
+						}
+						else
+						{
+							MessageBox.Show(InputHelper.isWrongWareHouseProductMassage(item));
+							break;
+						}
 					}
 				}
 
@@ -243,7 +271,6 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-
 		private BindableCollection<WareHouseProductModel> GetProductsToOrder()
 		{
 			BindableCollection<WareHouseProductModel> output = new BindableCollection<WareHouseProductModel>();
@@ -254,26 +281,44 @@ namespace WMDesktopUI.ViewModels
 					output.Add(item);
 				}
 			}
-			return output;
+			if (output.Count > 0)
+			{
+				return output;
+			}
+			else
+			{
+				return null;
+			}
 		}
 		public async Task MakeOrder()
 		{
 			try
 			{
-				_windowManager.ShowWindow(_makeOrdersView);
-				await _events.PublishOnUIThreadAsync(new OrderEventModel(GetProductsToOrder()));
+				if (GetProductsToOrder() != null)
+				{
+					_windowManager.ShowWindow(_makeOrdersView);
+					await _events.PublishOnUIThreadAsync(new OrderEventModel(GetProductsToOrder()));
+				}
+				else
+				{
+					MessageBox.Show("Потрібно обрати товар,  щоб зробити замовлення.");
+				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				MessageBox.Show("Message: \n" + ex.Message + '\n' +
+						"StackTrase: \n" + ex.StackTrace + '\n' +
+						"InnerException: \n" + ex.InnerException);
 			}
 		}
 
+		/// <summary>
+		/// Event handlers
+		/// </summary>
 		public void Handle(OrderMadeEventModel message)
 		{
 			RefreshView();
 		}
-
 		public void Handle(OpenWareHouseEvent message)
 		{
 			RefreshView();

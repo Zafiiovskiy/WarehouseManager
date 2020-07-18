@@ -19,20 +19,39 @@ namespace WMDesktopUI.ViewModels
 		private BindableCollection<WareHouseProductModel> _productsToAdd = new BindableCollection<WareHouseProductModel>();
 		private IMapper _mapper;
 		private ICommand _command;
-		public ICommand UploadPhotoCommand
+
+
+		public AddProductToWareHouseViewModel(IMapper mapper)
 		{
-			get
-			{
-				if (_command == null)
-				{
-					_command = new DelegateCommandHelper(CanExecute, UploadPhoto);
-				}
-				return _command;
-			}
+			_mapper = mapper;
+			LoadPlaceholder();
 		}
+
 		private bool CanExecute(object parameter)
 		{
 			return true;
+		}
+		private bool CanAddProducts
+		{
+			get
+			{
+				if (ProductsToAdd.Count > 0)
+				{
+					foreach (var item in ProductsToAdd)
+					{
+						if (InputHelper.isCorrectWareHouseProduct(item) == false)
+						{
+							MessageBox.Show(InputHelper.isWrongWareHouseProductMassage(item));
+							return false;
+						}
+					}
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
 		}
 		public BindableCollection<WareHouseProductModel> ProductsToAdd
 		{
@@ -45,14 +64,20 @@ namespace WMDesktopUI.ViewModels
 			}
 		}
 
-
-		public AddProductToWareHouseViewModel(IMapper mapper)
+		/// <summary>
+		/// Methods
+		/// </summary>
+		public ICommand UploadPhotoCommand
 		{
-			_mapper = mapper;
-			LoadPlaceholder();
+			get
+			{
+				if (_command == null)
+				{
+					_command = new DelegateCommandHelper(CanExecute, UploadPhoto);
+				}
+				return _command;
+			}
 		}
-
-
 		private void LoadPlaceholder()
 		{
 			WareHouseProductModel placeholder = new WareHouseProductModel()
@@ -79,22 +104,6 @@ namespace WMDesktopUI.ViewModels
                 var bitmap = new BitmapImage(new Uri(op.FileName));
 				ProductsToAdd[index].Photo = ConvertHelper.ImageToByteArray(bitmap);
             }
-		}
-		
-		private bool CanAddProducts
-		{
-			get
-			{
-				bool output = false;
-				if(ProductsToAdd.Count > 0)
-				{
-					foreach (var item in ProductsToAdd)
-					{
-						output = InputHelper.isCorrectWareHouseProduct(item);
-					}
-				}
-				return output;
-			}
 		}
 		public void AddProducts()
 		{

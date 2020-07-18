@@ -12,8 +12,16 @@ namespace WMDesktopUI.ViewModels
 {
 	public class AddClientsViewModel: Screen
     {
-		private BindableCollection<ClientModel> _clientsToAdd = new BindableCollection<ClientModel>();
 		private IMapper _mapper;
+
+		/// <summary>
+		/// Private backing fields
+		/// </summary>
+		private BindableCollection<ClientModel> _clientsToAdd = new BindableCollection<ClientModel>();
+
+		/// <summary>
+		/// Private fields
+		/// </summary>
 		private string WrongClientMessage { get; set; }
 		private bool CanAddClients
 		{
@@ -29,10 +37,23 @@ namespace WMDesktopUI.ViewModels
 							return false;
 						}
 					}
+					return true;
 				}
-				return true;
+				else
+				{
+					return false;
+				}
 			}
 		}
+		public AddClientsViewModel(IMapper mapper)
+		{
+			_mapper = mapper;
+			LoadPlaceholder();
+		}
+
+		/// <summary>
+		/// Public fields
+		/// </summary>
 		public BindableCollection<ClientModel> ClientsToAdd
 		{
 			get { return _clientsToAdd; }
@@ -43,12 +64,10 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => CanAddClients);
 			}
 		}
-		public AddClientsViewModel(IMapper mapper)
-		{
-			_mapper = mapper;
-			LoadPlaceholder();
-		}
 
+		/// <summary>
+		/// Methods
+		/// </summary>
 		private void LoadPlaceholder()
 		{
 			ClientModel placeholder = new ClientModel()
