@@ -146,87 +146,94 @@ namespace WMDesktopUI.ViewModels
 			{
 				if (WareHouseProducts?.Count > 0)
 				{
-					if (SelectedValue?.Text == "за Заводським номером")
+					if (SearchBox != null)
 					{
-						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.FactoryNumber)).Where(x => x.FactoryNumber.Contains(SearchBox)).ToList();
-						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-						foreach (var item in WareHouseProducts)
+						if (SelectedValue?.Text == "за Заводським номером")
 						{
-							if (found.Contains(item))
+							var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.FactoryNumber)).Where(x => x.FactoryNumber.Contains(SearchBox)).ToList();
+							BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+							foreach (var item in WareHouseProducts)
 							{
-								result.Add(item);
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								WareHouseProducts = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вашим запитом.");
 							}
 						}
-						if (result.Count > 0)
+						else if (SelectedValue?.Text == "за Назвою")
 						{
+							var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
+							BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+							foreach (var item in WareHouseProducts)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
 							WareHouseProducts = result;
+						}
+						else if (SelectedValue?.Text == "за Сервізом")
+						{
+							var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Set)).Where(x => x.Set.Contains(SearchBox)).ToList();
+							BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+							foreach (var item in WareHouseProducts)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								WareHouseProducts = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вагим запитом.");
+							}
+						}
+						else if (SelectedValue?.Text == "за Типом")
+						{
+							var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Type)).Where(x => x.Type.Contains(SearchBox)).ToList();
+							BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
+							foreach (var item in WareHouseProducts)
+							{
+								if (found.Contains(item))
+								{
+									result.Add(item);
+								}
+							}
+							if (result.Count > 0)
+							{
+								WareHouseProducts = result;
+							}
+							else
+							{
+								MessageBox.Show("Жодного результату за вагим запитом.");
+							}
 						}
 						else
 						{
-							MessageBox.Show("Жодного результату за вашим запитом.");
-						}
-					}
-					else if (SelectedValue?.Text == "за Назвою")
-					{
-						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
-						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-						foreach (var item in WareHouseProducts)
-						{
-							if (found.Contains(item))
-							{
-								result.Add(item);
-							}
-						}
-						WareHouseProducts = result;
-					}
-					else if (SelectedValue?.Text == "за Сервізом")
-					{
-						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Set)).Where(x => x.Set.Contains(SearchBox)).ToList();
-						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-						foreach (var item in WareHouseProducts)
-						{
-							if (found.Contains(item))
-							{
-								result.Add(item);
-							}
-						}
-						if (result.Count > 0)
-						{
-							WareHouseProducts = result;
-						}
-						else
-						{
-							MessageBox.Show("Жодного результату за вагим запитом.");
-						}
-					}
-					else if (SelectedValue?.Text == "за Типом")
-					{
-						var found = WareHouseProducts.Where(x => !String.IsNullOrWhiteSpace(x.Type)).Where(x => x.Type.Contains(SearchBox)).ToList();
-						BindableCollection<WareHouseProductModel> result = new BindableCollection<WareHouseProductModel>();
-						foreach (var item in WareHouseProducts)
-						{
-							if (found.Contains(item))
-							{
-								result.Add(item);
-							}
-						}
-						if (result.Count > 0)
-						{
-							WareHouseProducts = result;
-						}
-						else
-						{
-							MessageBox.Show("Жодного результату за вагим запитом.");
+							MessageBox.Show("Оберіть параметер пошуку.");
 						}
 					}
 					else
 					{
-						MessageBox.Show("Оберіть параметер пошуку.");
+						MessageBox.Show("Ви забули ввести параметер пошуку.");
 					}
 				}
 				else
 				{
-					MessageBox.Show("Додайте товар, щоб шукати.");
+					MessageBox.Show("Додайте товар, щоб шукати");
 				}
 			}
 			catch (Exception ex)
@@ -259,9 +266,6 @@ namespace WMDesktopUI.ViewModels
 						}
 					}
 				}
-
-				MessageBox.Show("Зміни успішно збережено");
-
 			}
 			catch (Exception ex)
 			{
@@ -277,8 +281,8 @@ namespace WMDesktopUI.ViewModels
 			foreach (var item in WareHouseProducts)
 			{
 				if (item.Selected)
-				{
-					output.Add(item);
+				{ 
+					output.Add(ObjectHelper.Copy(item));
 				}
 			}
 			if (output.Count > 0)

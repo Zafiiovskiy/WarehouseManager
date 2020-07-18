@@ -151,6 +151,7 @@
     <Compile Include="Helpers\ConvertHelper.cs" />
     <Compile Include="Helpers\DelegateCommandHelper.cs" />
     <Compile Include="Helpers\InputHelper.cs" />
+    <Compile Include="Helpers\ObjectHelper.cs" />
     <Compile Include="Models\ClientModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\WareHouseProductModel.cs" />

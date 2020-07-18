@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -114,10 +115,6 @@ namespace WMDesktopUI.Helpers
 			{
 				return false;
 			}
-			if (String.IsNullOrEmpty(wareHouseProductModel.ProductDescription))
-			{
-				return false;
-			}
 			if (wareHouseProductModel.NetPrice <= 0)
 			{
 				return false;
@@ -157,10 +154,6 @@ namespace WMDesktopUI.Helpers
 			{
 				message += $"Неправильно введена кількість: {wareHouseProductModel.FactoryNumber}.\n";
 			}
-			if (String.IsNullOrEmpty(wareHouseProductModel.ProductDescription))
-			{
-				message += $"Ви забули ввести опис: {wareHouseProductModel.FactoryNumber}.\n";
-			}
 			if (wareHouseProductModel.NetPrice <= 0)
 			{
 				message += $"Неправильно введена ціна покупки: {wareHouseProductModel.FactoryNumber}.\n";
@@ -170,6 +163,17 @@ namespace WMDesktopUI.Helpers
 				message += $"Неправильно введена ціна продажу: {wareHouseProductModel.FactoryNumber}.\n";
 			}
 			return message;
+		}
+		public static bool areUpdatableProducts(BindableCollection<WareHouseProductModel> wareHouseProducts)
+		{
+			foreach (var item in wareHouseProducts)
+			{
+				if(item.WasUpdated == true)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

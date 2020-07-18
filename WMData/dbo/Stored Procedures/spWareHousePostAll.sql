@@ -1,7 +1,7 @@
 ﻿CREATE PROCEDURE [dbo].[spWareHousePostAll]
-	@FactoryNumber nvarchar(10),
+	@FactoryNumber nvarchar(128),
 	@Name nvarchar(128),
-	@Set NCHAR(200),
+	@Set NCHAR(128),
 	@Type NCHAR(128), 
     @Photo IMAGE, 
     @QuantityInStock INT, 
@@ -11,5 +11,5 @@
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO dbo.WareHouse VALUES(@FactoryNumber,@Name,@Set,@Type,@Photo,@QuantityInStock,@ProductDescription,@NetPrice,@SellPrice);
+	INSERT INTO dbo.WareHouse(FactoryNumber,[Name],[Set],[Type],[Photo],[QuantityInStock],[ProductDescription],NetPrice,SellPrice) VALUES(@FactoryNumber,@Name,@Set,@Type,@Photo,@QuantityInStock,@ProductDescription,@NetPrice,@SellPrice);
 END
