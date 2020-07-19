@@ -17,8 +17,10 @@ namespace WMDesktopUI.ViewModels
 {
 	public class OrderDetailsViewModel : Screen, IHandle<OrderDetailsEventModel>
     {
-		IMapper _mapper;
+		private IMapper _mapper;
 		private IEventAggregator _events;
+		private IWareHouseData _wareHouseData;
+		private IOrdersData _ordersData;
 		/// <summary>
 		/// Private backing fields
 		/// </summary>
@@ -36,11 +38,12 @@ namespace WMDesktopUI.ViewModels
 		/// </summary>
 		private List<int> MaxQuantityInStock = new List<int>();
 
-
-		public OrderDetailsViewModel(IEventAggregator events, IMapper mapper)
+		public OrderDetailsViewModel(IEventAggregator events, IMapper mapper, IWareHouseData wareHouseData, IOrdersData ordersData)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_events = events;
+			_wareHouseData = wareHouseData;
+			_ordersData = ordersData;
 			_mapper = mapper;
 			_events.Subscribe(this);
 		}
@@ -139,12 +142,11 @@ namespace WMDesktopUI.ViewModels
 			try
 			{
 				var product = obj as WareHouseProductModel;
-				OrdersData data = new OrdersData();
-				var orders = data.GetOrderByClientId(new
+				var orders = _ordersData.GetOrderByClientId(new
 				{
 					ClientId = SelectedClient.Id
 				});
-				orders.Where(x => x.ProductId == product.ProductId).ToList().ForEach(x => data.ReverseOrderByProduct(x));
+				orders.Where(x => x.ProductId == product.ProductId).ToList().ForEach(x => _ordersData.ReverseOrderByProduct(x));
 				BindableCollection<WareHouseProductModel> found = new BindableCollection<WareHouseProductModel>();
 				foreach (var item in ProductsForOrder)
 				{

@@ -1,10 +1,11 @@
-﻿<Window x:Class="WMDesktopUI.Views.MakeOrderView"
+﻿<Window x:Class="WMDesktopUI.Views.MakeToBuyView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WMDesktopUI.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d" Height="600" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Title="Вікно замовлення" WindowStyle="ToolWindow">
+        mc:Ignorable="d" Height="600" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen"  WindowStyle="ToolWindow"
+        Title="Замовлення">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="120"/>
@@ -31,7 +32,7 @@
             </ListBox>
             <Button x:Name="LoadClients" ToolTip="Оновити список клієнтів" Height="30" Width="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
                 <materialDesign:PackIcon Kind="Refresh" Margin="0" Width="25" Height="25" VerticalAlignment="Center" />
-             
+
             </Button>
         </StackPanel>
 
@@ -120,12 +121,12 @@
             <TextBlock x:Name="Profit" Margin="5" Foreground="#2a4e53"/>
         </StackPanel>
 
-        <Button x:Name="MakeOrder" ToolTip="Оформити замовлення на клієнта" Grid.Row="3" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+        <Button x:Name="MakeToBuy" ToolTip="Оформити замовлення на клієнта" Grid.Row="3" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="CartAdd" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
-                <TextBlock Text="Оформити" Margin="0 2 0 0"/>
+                <materialDesign:PackIcon Kind="InboxArrowDown" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Оформити замовлення" Margin="0 2 0 0"/>
             </StackPanel>
         </Button>
-        
+
     </Grid>
 </Window>

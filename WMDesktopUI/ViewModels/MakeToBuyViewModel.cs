@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using WMDesktopUI.Events;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Library.DataManaging.Models;
@@ -15,12 +16,12 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-	public class MakeOrderViewModel: Screen, IHandle<OrderEventModel>
+    public class MakeToBuyViewModel : Screen, IHandle<MakeToBuyEventModel>
     {
 		private IMapper _mapper;
 		private IEventAggregator _events;
-		private IOrdersData _ordersData;
 		private IClientsData _clientsData;
+		private IWareHouseData _wareHouseData;
 		/// <summary>
 		/// Private backing fields
 		/// </summary>
@@ -37,14 +38,13 @@ namespace WMDesktopUI.ViewModels
 		/// <summary>
 		/// Private fields
 		/// </summary>
-		private List<int> MaxQuantityInStock = new List<int>();
-		public MakeOrderViewModel(IEventAggregator events,IMapper mapper,IClientsData clientsData, IOrdersData ordersData)
+		public MakeToBuyViewModel(IEventAggregator events, IMapper mapper, IClientsData clientsData, IWareHouseData wareHouseData)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_events = events;
+			_wareHouseData = wareHouseData;
 			_mapper = mapper;
 			_clientsData = clientsData;
-			_ordersData = ordersData;
 			_events.Subscribe(this);
 			RefreshSums();
 		}
@@ -61,14 +61,14 @@ namespace WMDesktopUI.ViewModels
 				_selectedClient = value;
 				NotifyOfPropertyChange(() => SelectedClient);
 				NotifyOfPropertyChange(() => SelectedClientString);
-				NotifyOfPropertyChange(() => CanMakeOrder);
+				NotifyOfPropertyChange(() => CanMakeToBuy);
 			}
 		}
 		public string SelectedClientString
 		{
-			get 
+			get
 			{
-				if(SelectedClient == null)
+				if (SelectedClient == null)
 				{
 					return "Оберіть клієнта";
 				}
@@ -133,6 +133,7 @@ namespace WMDesktopUI.ViewModels
 			{
 				_selectedValue = value;
 				NotifyOfPropertyChange(() => SelectedValue);
+				NotifyOfPropertyChange(() => CanMakeToBuy);
 			}
 		}
 		public string SearchBox
@@ -237,7 +238,7 @@ namespace WMDesktopUI.ViewModels
 					MessageBox.Show("Введіть параметер пошуку, щоб шукати.");
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message);
 			}
@@ -249,12 +250,12 @@ namespace WMDesktopUI.ViewModels
 			SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");
 			Profit = "Прибуток: " + (modelSums.SellPrice - modelSums.NetPrice).ToString("c");
 		}
-		public bool CanMakeOrder
+		public bool CanMakeToBuy
 		{
 			get
 			{
 				bool result = true;
-				if(SelectedClient != null)
+				if (SelectedClient != null)
 				{
 					result = true;
 				}
@@ -265,21 +266,22 @@ namespace WMDesktopUI.ViewModels
 				return result;
 			}
 		}
-		public void MakeOrder()
+		public async Task MakeToBuy()
 		{
 			bool isOrdarable = true;
 			for (int i = 0; i < ProductsForOrder.Count; i++)
 			{
-				if (MaxQuantityInStock[i] < ProductsForOrder[i].QuantityInStock || ProductsForOrder[i].QuantityInStock <= 0)
+				if (ProductsForOrder[i].QuantityInStock <= 0)
 				{
 					isOrdarable = false;
-					MessageBox.Show($"Кількість товару '{ProductsForOrder[i].Name}' рівна нулю або перевищує кількість на складі.");
+					MessageBox.Show($"Кількість товару '{ProductsForOrder[i].Name}' менша-рівна нулю.");
 				}
 			}
 			if (isOrdarable)
 			{
 				try
 				{
+					ToBuysData toBuysData = new ToBuysData();
 					List<OrderModel> orderModels = new List<OrderModel>();
 					foreach (var item in ProductsForOrder)
 					{
@@ -296,13 +298,13 @@ namespace WMDesktopUI.ViewModels
 					var orders = _mapper.Map<List<OPostModel>>(orderModels);
 					foreach (var item in orders)
 					{
-						_ordersData.PostOrder(item);
+						toBuysData.PostToBuy(item);
 					}
-					MessageBox.Show("Покупку успішно додано.");
-					_events.PublishOnUIThread(new OrderMadeEventModel());
+					await _events.PublishOnUIThreadAsync(new MakeToBuyMadeEventModel());
+					MessageBox.Show("Замовлення успішно оформлено.");
 					this.TryClose();
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					MessageBox.Show("Message: \n" + ex.Message + '\n' +
 						"StackTrase: \n" + ex.StackTrace + '\n' +
@@ -324,27 +326,18 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-		public void LoadMaxQuantities()
-		{
-			foreach (var item in ProductsForOrder)
-			{
-				MaxQuantityInStock.Add(item.QuantityInStock);
-				item.QuantityInStock = 0;
-			}
-		}
-
+		
 		/// <summary>
 		/// Event handlers
 		/// </summary>
-		public void Handle(OrderEventModel order)
-		{
+		public void Handle(MakeToBuyEventModel products)
+        {
 			LoadClients();
-			ProductsForOrder = order.OrderProducts;
-			LoadMaxQuantities();
+			ProductsForOrder = products.ToBuyProducts;
 			modelSums = CountSums();
 			SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
 			SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");
 			Profit = "Прибуток: " + (modelSums.SellPrice - modelSums.NetPrice).ToString("c");
 		}
-	}
+    }
 }

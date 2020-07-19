@@ -6,7 +6,7 @@ using WMDesktopUI.Library.DataManaging.SQLAccess;
 
 namespace WMDesktopUI.Library.DataManaging.DataAccess
 {
-    public class ClientsData
+    public class ClientsData : IClientsData
     {
         public List<CModel> GetClients()
         {

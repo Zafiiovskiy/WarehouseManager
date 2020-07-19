@@ -6,7 +6,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	UPDATE dbo.WareHouse SET QuantityInStock+= @ProductQuantity WHERE ProductId = @ProductId;
+	UPDATE dbo.WareHouse SET QuantityInStock+= @ProductQuantity,IsOrdered = 0 WHERE ProductId = @ProductId;
 	
 	DELETE FROM dbo.Orders WHERE ProductId = @ProductId
 

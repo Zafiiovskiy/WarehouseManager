@@ -7,7 +7,7 @@ using WMDesktopUI.Library.DataManaging.SQLAccess;
 
 namespace WMDesktopUI.Library.DataManaging.DataAccess
 {
-    public class OrdersData
+    public class OrdersData : IOrdersData
     {
         public List<OModel> GetOrders()
         {

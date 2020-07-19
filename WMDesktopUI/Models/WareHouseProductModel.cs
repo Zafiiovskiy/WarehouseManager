@@ -156,19 +156,5 @@ namespace WMDesktopUI.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
-
-        private static BitmapImage toBitmap(Byte[] value)
-        {
-            if (value != null && value is byte[])
-            {
-                byte[] ByteArray = value as byte[];
-                BitmapImage bmp = new BitmapImage();
-                bmp.BeginInit();
-                bmp.StreamSource = new MemoryStream(ByteArray);
-                bmp.EndInit();
-                return bmp;
-            }
-            return null;
-        }
     }
 }

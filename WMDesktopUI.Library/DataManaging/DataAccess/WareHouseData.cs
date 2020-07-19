@@ -8,7 +8,7 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.Library.DataManaging.DataAccess
 {
-    public class WareHouseData
+    public class WareHouseData : IWareHouseData
     {
         public List<WHProductModel> GetProducts()
         {
@@ -18,12 +18,24 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 var output = sql.LoadData<WHProductModel, dynamic>("dbo.spWareHouseGetAll", new { }, "WMData");
                 return output;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new InvalidDataException("GetProducts() coundn't post data.", ex);
             }
         }
-
+        public List<WHProductModel> GetProductsToBuy()
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<WHProductModel, dynamic>("dbo.spWareHouseGetToBuys", new { }, "WMData");
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("GetProductsToBuy() coundn't post data.", ex);
+            }
+        }
         public WHProductModel GetProductById(object Id)
         {
             try

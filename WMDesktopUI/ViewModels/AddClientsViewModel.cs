@@ -13,11 +13,12 @@ namespace WMDesktopUI.ViewModels
 	public class AddClientsViewModel: Screen
     {
 		private IMapper _mapper;
-
+		private IClientsData _clientsData;
 		/// <summary>
 		/// Private backing fields
 		/// </summary>
 		private BindableCollection<ClientModel> _clientsToAdd = new BindableCollection<ClientModel>();
+		
 
 		/// <summary>
 		/// Private fields
@@ -45,9 +46,10 @@ namespace WMDesktopUI.ViewModels
 				}
 			}
 		}
-		public AddClientsViewModel(IMapper mapper)
+		public AddClientsViewModel(IMapper mapper, IClientsData clientsData)
 		{
 			_mapper = mapper;
+			_clientsData = clientsData;
 			LoadPlaceholder();
 		}
 
@@ -85,10 +87,9 @@ namespace WMDesktopUI.ViewModels
 			{
 				try
 				{
-					ClientsData clientsData = new ClientsData();
 					var clientsToAdd = new List<ClientModel>(ClientsToAdd);
 					var clients = _mapper.Map<List<CPostModel>>(clientsToAdd);
-					clients.ForEach(client => clientsData.PostClient(client));
+					clients.ForEach(client => _clientsData.PostClient(client));
 					ClientsToAdd.Clear();
 					LoadPlaceholder();
 					MessageBox.Show("Клієнтів успішно додано.");

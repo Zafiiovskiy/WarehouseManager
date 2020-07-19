@@ -1,0 +1,13 @@
+﻿using System.Collections.Generic;
+using WMDesktopUI.Library.DataManaging.Models;
+
+namespace WMDesktopUI.Library.DataManaging.DataAccess
+{
+    public interface IClientsData
+    {
+        List<CModel> GetClients();
+        List<CModel> GetClientsHaveOrders();
+        void PostClient(CPostModel model);
+        void UpdateClient(CModel model);
+    }
+}

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WMDesktopUI.Models;
 
@@ -89,6 +90,8 @@ namespace WMDesktopUI.Helpers
 		}
 		public static bool isCorrectWareHouseProduct(WareHouseProductModel wareHouseProductModel)
 		{
+			wareHouseProductModel.FactoryNumber = Regex.Replace(wareHouseProductModel.FactoryNumber, @"\s+", "");
+
 			if (String.IsNullOrEmpty(wareHouseProductModel.FactoryNumber) || 
 				IsDigitsOnly(wareHouseProductModel.FactoryNumber) == false ||
 				wareHouseProductModel.FactoryNumber.Length != 10)
@@ -127,6 +130,8 @@ namespace WMDesktopUI.Helpers
 		}
 		public static string isWrongWareHouseProductMassage(WareHouseProductModel wareHouseProductModel)
 		{
+			wareHouseProductModel.FactoryNumber = Regex.Replace(wareHouseProductModel.FactoryNumber, @"\s+", "");
+
 			string message = "Неправильно введено: \n";
 			if (String.IsNullOrEmpty(wareHouseProductModel.FactoryNumber) ||
 				IsDigitsOnly(wareHouseProductModel.FactoryNumber) == false ||
@@ -164,6 +169,89 @@ namespace WMDesktopUI.Helpers
 			}
 			return message;
 		}
+		public static bool isCorrectWareHouseProductToBuy(WareHouseProductModel wareHouseProductModel)
+		{
+			wareHouseProductModel.FactoryNumber = Regex.Replace(wareHouseProductModel.FactoryNumber, @"\s+", "");
+
+			if (String.IsNullOrEmpty(wareHouseProductModel.FactoryNumber) ||
+				IsDigitsOnly(wareHouseProductModel.FactoryNumber) == false ||
+				wareHouseProductModel.FactoryNumber.Length != 10)
+			{
+				return false;
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Name))
+			{
+				return false;
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Set))
+			{
+				return false;
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Type))
+			{
+				return false;
+			}
+			if (wareHouseProductModel.Photo == null)
+			{
+				return false;
+			}
+			if (wareHouseProductModel.QuantityInStock < 0)
+			{
+				return false;
+			}
+			if (wareHouseProductModel.NetPrice < 0)
+			{
+				return false;
+			}
+			if (wareHouseProductModel.SellPrice < 0)
+			{
+				return false;
+			}
+			return true;
+		}
+		public static string isWrongWareHouseProductMassageToBuy(WareHouseProductModel wareHouseProductModel)
+		{
+			wareHouseProductModel.FactoryNumber = Regex.Replace(wareHouseProductModel.FactoryNumber, @"\s+", "");
+
+			string message = "Неправильно введено: \n";
+			if (String.IsNullOrEmpty(wareHouseProductModel.FactoryNumber) ||
+				IsDigitsOnly(wareHouseProductModel.FactoryNumber) == false ||
+				wareHouseProductModel.FactoryNumber.Length != 10)
+			{
+				message += $"Заводський номер: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Name))
+			{
+				message += $"Ви забули ввести ім'я: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Set))
+			{
+				message += $"Ви забули ввести сервіз: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (String.IsNullOrEmpty(wareHouseProductModel.Type))
+			{
+				message += $"Ви забули ввести тип: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.Photo == null)
+			{
+				message += $"Ви забули вибрати фото: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.QuantityInStock < 0)
+			{
+				message += $"Неправильно введена кількість: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.NetPrice < 0)
+			{
+				message += $"Неправильно введена ціна покупки: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			if (wareHouseProductModel.SellPrice < 0)
+			{
+				message += $"Неправильно введена ціна продажу: {wareHouseProductModel.FactoryNumber}.\n";
+			}
+			return message;
+		}
+
+
 		public static bool areUpdatableProducts(BindableCollection<WareHouseProductModel> wareHouseProducts)
 		{
 			foreach (var item in wareHouseProducts)

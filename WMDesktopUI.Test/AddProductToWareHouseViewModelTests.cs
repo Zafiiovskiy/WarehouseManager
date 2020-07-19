@@ -28,6 +28,11 @@ namespace WMDesktopUI.Test
         [InlineData("14862a6597", "Горня тестове", "Toys", "Тип", 3, 10.50, 30.99, false)]
         [InlineData("", "Горня тестове", "Toys", "Тип", 3, 10.50, 30.99, false)]
 
+        //FactoryNumber right
+        [InlineData(" 1486276597", "Горня тестове", "Toys", "Тип", 3, 10.50, 30.99, true)]
+        [InlineData("148 62 76 597", "Горня тестове", "Toys", "Тип", 3, 10.50, 30.99, true)]
+
+
         //Name wrong
         [InlineData("1486276597", "", "Toys", "Тип", 3, 10.50, 30.99, false)]
         [InlineData("1486276597", null , "Toys", "Тип", 3, 10.50, 30.99, false)]
@@ -41,7 +46,6 @@ namespace WMDesktopUI.Test
         [InlineData("1486276597", "Горня тестове", "Toys", null , 3, 10.50, 30.99, false)]
 
         //QuantityInStock wrong
-        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 0, 10.50, 30.99, false)]
         [InlineData("1486276597", "Горня тестове", "Toys", "Тип", -1, 10.50, 30.99, false)]
         [InlineData("1486276597", "Горня тестове", "Toys", "Тип", int.MinValue , 10.50, 30.99, false)]
 
@@ -75,6 +79,7 @@ namespace WMDesktopUI.Test
             bool actual = InputHelper.isCorrectWareHouseProduct(product);
 
             bool expected = _expected;
+            Assert.Equal(actual, expected);
         }
     }
 }

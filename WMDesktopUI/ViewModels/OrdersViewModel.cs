@@ -19,6 +19,7 @@ namespace WMDesktopUI.ViewModels
 		private ICommand _command;
 		private IWindowManager _windowManager;
 		private IEventAggregator _events;
+		private IWareHouseData _wareHouseData;
 		/// <summary>
 		/// Private backing fields
 		/// </summary>
@@ -29,10 +30,11 @@ namespace WMDesktopUI.ViewModels
 
 
 
-		public OrdersViewModel(IMapper mapper,IWindowManager windowManager, IEventAggregator events)
+		public OrdersViewModel(IMapper mapper,IWindowManager windowManager, IEventAggregator events, IWareHouseData wareHouseData)
 		{
 			_mapper = mapper;
 			_windowManager = windowManager;
+			_wareHouseData = wareHouseData;
 			_events = events;
 			_events.Subscribe(this);
 			LoadClients();
@@ -135,14 +137,13 @@ namespace WMDesktopUI.ViewModels
 			{
 				var client = obj as ClientModel;
 				OrdersData data = new OrdersData();
-				WareHouseData WHdata = new WareHouseData();
 				var orders = data.GetOrderByClientId(new
 				{
 					ClientId = client.Id
 				});
 
 				List<WHProductModel> productsDB = new List<WHProductModel>();
-				orders.ForEach(x => productsDB.Add(WHdata.GetProductById(new
+				orders.ForEach(x => productsDB.Add(_wareHouseData.GetProductById(new
 				{
 					x.ProductId
 				})));

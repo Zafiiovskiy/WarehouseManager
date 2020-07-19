@@ -140,6 +140,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Events\MakeToBuyEventModel.cs" />
+    <Compile Include="Events\MakeToBuyMadeEventModel.cs" />
     <Compile Include="Events\OpenClientsEvent.cs" />
     <Compile Include="Events\OpenHistoryEvent.cs" />
     <Compile Include="Events\OpenOrdersEvent.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="ViewModels\ClientsViewModel.cs" />
     <Compile Include="ViewModels\HistoryViewModel.cs" />
     <Compile Include="ViewModels\MakeOrderViewModel.cs" />
+    <Compile Include="ViewModels\MakeToBuyViewModel.cs" />
     <Compile Include="ViewModels\OrderDetailsViewModel.cs" />
     <Compile Include="ViewModels\OrdersViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -179,6 +182,9 @@
     </Compile>
     <Compile Include="Views\MakeOrderView.xaml.cs">
       <DependentUpon>MakeOrderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MakeToBuyView.xaml.cs">
+      <DependentUpon>MakeToBuyView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrderDetailsView.xaml.cs">
       <DependentUpon>OrderDetailsView.xaml</DependentUpon>
@@ -216,6 +222,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MakeOrderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MakeToBuyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

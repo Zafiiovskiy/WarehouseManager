@@ -4,9 +4,12 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using WMDesktopUI.Events;
 using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Library.DataManaging.Models;
@@ -14,16 +17,25 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-	public class AddProductToWareHouseViewModel : Screen
+	public class AddProductToWareHouseViewModel : Screen, IHandle<MakeToBuyMadeEventModel>
     {
 		private BindableCollection<WareHouseProductModel> _productsToAdd = new BindableCollection<WareHouseProductModel>();
 		private IMapper _mapper;
 		private ICommand _command;
+		private IEventAggregator _events;
+		private IWindowManager _windowManager;
+		private IWareHouseData _wareHouseData;
+		private MakeToBuyViewModel _makeToBuyViewModel;
 
-
-		public AddProductToWareHouseViewModel(IMapper mapper)
+		public AddProductToWareHouseViewModel(IMapper mapper, IWareHouseData wareHouseData, IEventAggregator events,
+			IWindowManager windowManager, MakeToBuyViewModel makeToBuyViewModel)
 		{
 			_mapper = mapper;
+			_events = events;
+			_events.Subscribe(this);
+			_windowManager = windowManager;
+			_makeToBuyViewModel = makeToBuyViewModel;
+			_wareHouseData = wareHouseData;
 			LoadPlaceholder();
 		}
 
@@ -53,6 +65,29 @@ namespace WMDesktopUI.ViewModels
 				}
 			}
 		}
+		private bool CanMakeToBuy
+		{
+			get
+			{
+				if (ProductsToAdd.Count > 0)
+				{
+					foreach (var item in ProductsToAdd)
+					{
+						if (InputHelper.isCorrectWareHouseProductToBuy(item) == false)
+						{
+							MessageBox.Show(InputHelper.isWrongWareHouseProductMassageToBuy(item));
+							return false;
+						}
+					}
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
 		public BindableCollection<WareHouseProductModel> ProductsToAdd
 		{
 			get { return _productsToAdd; }
@@ -105,16 +140,60 @@ namespace WMDesktopUI.ViewModels
 				ProductsToAdd[index].Photo = ConvertHelper.ImageToByteArray(bitmap);
             }
 		}
+		private BindableCollection<WareHouseProductModel> GetProductsToBuy()
+		{
+			BindableCollection<WareHouseProductModel> output = new BindableCollection<WareHouseProductModel>();
+			foreach (var item in ProductsToAdd)
+			{
+				output.Add(ObjectHelper.Copy(item));	
+			}
+			if (output.Count > 0)
+			{
+				var wareHouseProducts = _wareHouseData.GetProducts();
+				int counter = 0;
+				foreach (var itemOutput in output)
+				{
+					foreach (var itemWarehouse in wareHouseProducts)
+					{
+						if(itemOutput.FactoryNumber == itemWarehouse.FactoryNumber)
+						{
+							counter++;
+							itemOutput.ProductId = itemWarehouse.ProductId;
+						}
+					}
+				}
+				if(counter == 0)
+				{
+					throw new Exception("Something went wrong");
+				}
+				return output;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public async Task MakeToBuy()
+		{
+			if (CanMakeToBuy)
+			{
+				var productsToAdd = new List<WareHouseProductModel>(ProductsToAdd);
+				var products = _mapper.Map<List<WHPostProductModel>>(productsToAdd);
+				products.ForEach(prod => _wareHouseData.PostProduct(prod));
+				_windowManager.ShowWindow(_makeToBuyViewModel);
+				await _events.PublishOnUIThreadAsync(new MakeToBuyEventModel(GetProductsToBuy()));
+			}
+		}
 		public void AddProducts()
 		{
 			if (CanAddProducts)
 			{
 				try
 				{
-					WareHouseData wareHouseData = new WareHouseData();
 					var productsToAdd = new List<WareHouseProductModel>(ProductsToAdd);
 					var products = _mapper.Map<List<WHPostProductModel>>(productsToAdd);
-					products.ForEach(prod => wareHouseData.PostProduct(prod));
+					products.ForEach(prod => _wareHouseData.PostProduct(prod));
 					ProductsToAdd.Clear();
 					LoadPlaceholder();
 					MessageBox.Show("Товар успішно додано.");
@@ -142,6 +221,12 @@ namespace WMDesktopUI.ViewModels
 				}
 			}
 			ProductsToAdd = notDeleted;
+		}
+
+		public void Handle(MakeToBuyMadeEventModel message)
+		{
+			ProductsToAdd.Clear();
+			LoadPlaceholder();
 		}
 	}
 }

@@ -22,13 +22,14 @@ namespace WMDesktopUI.ViewModels
 		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
 		private TextBlock _selectedValue;
 		private string _searchBox;
+		private IClientsData _clientsData;
 
-
-		public ClientsViewModel(IMapper mapper, IEventAggregator events)
+		public ClientsViewModel(IMapper mapper, IEventAggregator events, IClientsData clientsData)
 		{
 			_events = events;
 			_events.Subscribe(this);
 			_mapper = mapper;
+			_clientsData = clientsData;
 			LoadClients();
 		}
 
@@ -66,8 +67,7 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				ClientsData clientsData = new ClientsData();
-				var wareHouseList = clientsData.GetClients();
+				var wareHouseList = _clientsData.GetClients();
 				var clients = _mapper.Map<List<ClientModel>>(wareHouseList);
 				Clients = new BindableCollection<ClientModel>(clients);
 			}
@@ -190,7 +190,6 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				ClientsData data = new ClientsData();
 				foreach (var item in Clients)
 				{
 					if (item.WasUpdated == true)
@@ -198,8 +197,12 @@ namespace WMDesktopUI.ViewModels
 						if (InputHelper.isCorrectClient(item))
 						{
 							var clientToUpdate = _mapper.Map<CModel>(item);
-							data.UpdateClient(clientToUpdate);
+							_clientsData.UpdateClient(clientToUpdate);
 							item.WasUpdated = false;
+							if(Clients.IndexOf(item) == Clients.Count - 1)
+							{
+								MessageBox.Show("Зміни успішно збережено");
+							}
 						}
 						else
 						{
@@ -208,9 +211,6 @@ namespace WMDesktopUI.ViewModels
 						}
 					}
 				}
-
-				MessageBox.Show("Зміни успішно збережено");
-
 			}
 			catch (Exception ex)
 			{

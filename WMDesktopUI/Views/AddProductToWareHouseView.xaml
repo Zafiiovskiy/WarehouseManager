@@ -135,10 +135,18 @@
 
             </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Right" Grid.Row="2">
+            
+            <Button x:Name="MakeToBuy" Background="Transparent" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="MoveToInbox" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                    <TextBlock Text="Зробити замовлення" Margin="0 2 0 0"/>
+                </StackPanel>
+            </Button>
+            
             <Button x:Name="AddProducts" Background="Transparent" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
                 <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ContentSave" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
-                    <TextBlock Text="Зберегти" Margin="0 2 0 0"/>
+                    <materialDesign:PackIcon Kind="BasketFill" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                    <TextBlock Text="Внести до складу" Margin="0 2 0 0"/>
                 </StackPanel>
             </Button>
         </StackPanel>

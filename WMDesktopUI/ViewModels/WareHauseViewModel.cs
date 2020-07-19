@@ -19,10 +19,11 @@ namespace WMDesktopUI.ViewModels
 {
 	public class WareHauseViewModel : Screen, IHandle<OrderMadeEventModel>, IHandle<OpenWareHouseEvent>
 	{
-		IMapper _mapper;
+		private IMapper _mapper;
 		private IEventAggregator _events;
 		private IWindowManager _windowManager;
 		private MakeOrderViewModel _makeOrdersView;
+		private IWareHouseData _wareHouseData;
 
 		/// <summary>
 		/// Private backing fields
@@ -36,10 +37,11 @@ namespace WMDesktopUI.ViewModels
 
 
 		public WareHauseViewModel(IMapper mapper, IEventAggregator events,MakeOrderViewModel makeOrderView,
-			IWindowManager windowManager)
+			IWindowManager windowManager, IWareHouseData wareHouseData)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
 			_mapper = mapper;
+			_wareHouseData = wareHouseData;
 			_events = events;
 			_events.Subscribe(this);
 			_windowManager = windowManager;
@@ -107,8 +109,7 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				WareHouseData wareHouseData = new WareHouseData();
-				var wareHouseList = wareHouseData.GetProducts();
+				var wareHouseList = _wareHouseData.GetProducts();
 				var products = _mapper.Map<List<WareHouseProductModel>>(wareHouseList);
 				WareHouseProducts = new BindableCollection<WareHouseProductModel>(products);
 				var sumOfNetPrices = wareHouseList.Sum(x => x.NetPrice * x.QuantityInStock);
@@ -247,7 +248,6 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				WareHouseData data = new WareHouseData();
 				foreach (var item in WareHouseProducts)
 				{
 					if (item.WasUpdated == true)
@@ -255,7 +255,7 @@ namespace WMDesktopUI.ViewModels
 						if (InputHelper.isCorrectWareHouseProduct(item))
 						{
 							var productToUpdate = _mapper.Map<WHProductModel>(item);
-							data.UpdateProduct(productToUpdate);
+							_wareHouseData.UpdateProduct(productToUpdate);
 							item.WasUpdated = false;
 							RefreshView();
 						}

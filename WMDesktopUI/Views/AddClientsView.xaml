@@ -40,7 +40,7 @@
                 <DataGridTemplateColumn Header="Ім'я">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть назву" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть ім'я" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -48,7 +48,7 @@
                 <DataGridTemplateColumn Header="Прізвище">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Surname,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть сервіз" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Surname,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть прізвище" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -56,7 +56,7 @@
                 <DataGridTemplateColumn Header="Адреса">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Adress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть тип" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            <TextBox MinWidth="250" MaxWidth="300" TextWrapping="Wrap" Text="{Binding Path=Adress,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть адресу" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

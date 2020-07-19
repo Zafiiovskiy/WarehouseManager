@@ -137,8 +137,8 @@
         </StackPanel>
         <Button x:Name="MakeOrder" ToolTip="Оберіть товар для замовлення" Grid.Row="3" Background="Transparent" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53" HorizontalAlignment="Left">
             <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="LocalShipping" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
-                <TextBlock Text="Оформити замовлення" Margin="0 2 0 0"/>
+                <materialDesign:PackIcon Kind="CartAdd" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Оформити покупку" Margin="0 2 0 0"/>
             </StackPanel>
         </Button>
         <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right">

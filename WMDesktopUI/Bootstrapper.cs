@@ -3,14 +3,11 @@ using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
+using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
 using WMDesktopUI.ViewModels;
-using WMDesktopUI.Views;
 
 namespace WMDesktopUI
 {
@@ -46,7 +43,10 @@ namespace WMDesktopUI
 
             _container
                 .Singleton<IWindowManager, WindowManager>()
-                .Singleton<IEventAggregator, EventAggregator>();
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<IWareHouseData, WareHouseData>()
+                .Singleton<IClientsData, ClientsData>()
+                .Singleton<IOrdersData, OrdersData>();
 
             GetType().Assembly
                 .GetTypes()

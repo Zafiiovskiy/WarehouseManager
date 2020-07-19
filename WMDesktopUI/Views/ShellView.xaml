@@ -106,7 +106,7 @@
                     </Button>
                     <Button Height="50" Foreground="#4e7e92" Padding="0" x:Name="OpenToBuy" Background="Transparent" BorderBrush="Transparent">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="CartAdd" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
+                            <materialDesign:PackIcon Kind="Inbox" Margin="10" Width="25" Height="25" VerticalAlignment="Center"/>
                             <TextBlock Text="Замовлення" VerticalAlignment="Center" Margin="20 10"/>
                         </StackPanel>
                     </Button>
