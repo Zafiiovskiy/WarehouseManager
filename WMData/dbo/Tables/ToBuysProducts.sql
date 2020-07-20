@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[WareHouse]
+﻿CREATE TABLE [dbo].[ToBuysProducts]
 (
 	[ProductId] INT NOT NULL PRIMARY KEY IDENTITY, 
     [FactoryNumber] NVARCHAR(10) NULL, 

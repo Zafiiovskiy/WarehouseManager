@@ -150,6 +150,7 @@
     <Compile Include="Events\OrderDetailsEventModel.cs" />
     <Compile Include="Events\OrderEventModel.cs" />
     <Compile Include="Events\OrderMadeEventModel.cs" />
+    <Compile Include="Events\ToBuyDetailsEventModel.cs" />
     <Compile Include="Helpers\ConvertHelper.cs" />
     <Compile Include="Helpers\DelegateCommandHelper.cs" />
     <Compile Include="Helpers\InputHelper.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="ViewModels\OrderDetailsViewModel.cs" />
     <Compile Include="ViewModels\OrdersViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\ToBuyDetailsViewModel.cs" />
     <Compile Include="ViewModels\ToBuyViewModel.cs" />
     <Compile Include="ViewModels\WareHauseViewModel.cs" />
     <Compile Include="Views\AddClientsView.xaml.cs">
@@ -198,6 +200,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Views\ToBuyDetailsView.xaml.cs">
+      <DependentUpon>ToBuyDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ToBuyView.xaml.cs">
       <DependentUpon>ToBuyView.xaml</DependentUpon>
@@ -238,6 +243,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ToBuyDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

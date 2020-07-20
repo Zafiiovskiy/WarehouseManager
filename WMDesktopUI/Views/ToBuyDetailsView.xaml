@@ -1,0 +1,108 @@
+﻿<Window x:Class="WMDesktopUI.Views.ToBuyDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WMDesktopUI.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Замовлення" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Border BorderBrush="#2a4e53" Grid.Row="0" BorderThickness="1" Margin="5" CornerRadius="4"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="2" BorderThickness="1" Margin="5" CornerRadius="4"/>
+
+        <StackPanel Orientation="Vertical" Grid.Row="0" Margin="10">
+            <DataGrid ItemsSource="{Binding ProductsToBuy,Mode=TwoWay}" Grid.Row="1" Margin="10" HorizontalAlignment="Center" 
+                  AutoGenerateColumns="False" CanUserDeleteRows="True" CanUserAddRows="False" MaxHeight="360">
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Заводський номер">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="True" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=FactoryNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Назва">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="True" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть назву" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Фото">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Margin="0" MaxWidth="150" MaxHeight="150" Source="{Binding Path=Photo}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Кількість">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна купівлі">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox IsReadOnly="True" MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна продажу">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=SellPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding Path=DataContext.ReverseOrder,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding}" Height="30"  Foreground="#DDB92B2B" Padding="0" Background="Transparent" BorderBrush="#DDB92B2B" >
+                                    <StackPanel Orientation="Horizontal" Margin="3 1">
+                                        <materialDesign:PackIcon Kind="Undo" Margin="0" Height="25" Width="25" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Відмінити" Margin="0 2 0 0"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5">
+            <TextBlock x:Name="SelectedClientString" Margin="5" Foreground="#2a4e53"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Button x:Name="RefreshSums" ToolTip="Оновити суми" Height="20" Width="20" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="#4e7e92" >
+                <materialDesign:PackIcon Kind="Refresh" Margin="0" Width="15" Height="15" VerticalAlignment="Center" />
+
+            </Button>
+            <TextBlock x:Name="SumOfNetPrices" Margin="5" Foreground="#2a4e53"/>
+            <TextBlock x:Name="SumOfSellPrices" Margin="5" Foreground="#2a4e53"/>
+            <TextBlock x:Name="Profit" Margin="5" Foreground="#2a4e53"/>
+        </StackPanel>
+
+        <Button x:Name="SaveChanges" ToolTip="Оформити замовлення на клієнта" Grid.Row="2" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ContentSaveEdit" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Зберегти зміни" Margin="0 2 0 0"/>
+            </StackPanel>
+        </Button>
+
+    </Grid>
+</Window>

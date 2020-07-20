@@ -8,7 +8,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
     {
         WHProductModel GetProductById(object Id);
         List<WHProductModel> GetProducts();
-        List<WHProductModel> GetProductsToBuy();
         void PostProduct(WHPostProductModel model);
         void UpdateProduct(WHProductModel model);
     }

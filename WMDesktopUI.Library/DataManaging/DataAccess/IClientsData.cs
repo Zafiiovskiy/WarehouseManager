@@ -7,6 +7,7 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
     {
         List<CModel> GetClients();
         List<CModel> GetClientsHaveOrders();
+        List<CModel> GetClientsHaveToBuys();
         void PostClient(CPostModel model);
         void UpdateClient(CModel model);
     }

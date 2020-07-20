@@ -84,7 +84,12 @@
     <Build Include="dbo\Stored Procedures\spOrdersReversByProductId.sql" />
     <Build Include="dbo\Tables\ToBuys.sql" />
     <Build Include="dbo\Stored Procedures\spToBuysPost.sql" />
-    <Build Include="dbo\Stored Procedures\spWareHouseGetToBuys.sql" />
+    <Build Include="dbo\Stored Procedures\spClientsGetHaveToBuys.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysReverseClient.sql" />
+    <Build Include="dbo\Tables\ToBuysProducts.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysProductsPostAll.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysGetClientId.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysProductsGetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="WMData.refactorlog" />

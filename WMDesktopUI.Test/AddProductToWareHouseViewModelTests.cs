@@ -16,7 +16,7 @@ namespace WMDesktopUI.Test
     public class AddProductToWareHouseViewModelTests
     {
         private byte[] goodImage = ConvertHelper.ImageToByteArray(new BitmapImage(new Uri(@"C:\Users\Andrian\Downloads\photo_2019-06-25_17-56-37.jpg")));
-      
+        private const decimal testMax = 79228162514264337;
         [Theory]
 
         //Everything ok
@@ -77,6 +77,38 @@ namespace WMDesktopUI.Test
             };
 
             bool actual = InputHelper.isCorrectWareHouseProduct(product);
+
+            bool expected = _expected;
+            Assert.Equal(actual, expected);
+        }
+
+        [Theory]
+
+        //Prices right
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, 10.50, 30.99, true)]
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, 0, 0, true)]
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, 0, 12, true)]
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, 12, 0, true)]
+        //Prices wrong
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, 12, -1, false)]
+        [InlineData("1486276597", "Горня тестове", "Toys", "Тип", 3, -1, 0, false)]
+
+        public void isCorrectWareHouseProductToBuy_ShouldCheck(string factoryNumber, string name, string set, string type,
+             int quantityInStock, decimal netPrice, decimal sellPrice, bool _expected)
+        {
+            WareHouseProductModel product = new WareHouseProductModel()
+            {
+                FactoryNumber = factoryNumber,
+                Name = name,
+                Set = set,
+                Type = type,
+                Photo = goodImage,
+                QuantityInStock = quantityInStock,
+                NetPrice = netPrice,
+                SellPrice = sellPrice
+            };
+
+            bool actual = InputHelper.isCorrectWareHouseProductToBuy(product);
 
             bool expected = _expected;
             Assert.Equal(actual, expected);

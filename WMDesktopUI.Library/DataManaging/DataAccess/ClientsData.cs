@@ -34,6 +34,19 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException("GetClientsHaveOrders() coundn't get data.", ex);
             }
         }
+        public List<CModel> GetClientsHaveToBuys()
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<CModel, dynamic>("dbo.spClientsGetHaveToBuys", new { }, "WMData");
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("GetClientsHaveToBuys() coundn't get data.", ex);
+            }
+        }
         public void PostClient(CPostModel model)
         {
             try

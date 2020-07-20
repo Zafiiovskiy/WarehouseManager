@@ -140,49 +140,20 @@ namespace WMDesktopUI.ViewModels
 				ProductsToAdd[index].Photo = ConvertHelper.ImageToByteArray(bitmap);
             }
 		}
-		private BindableCollection<WareHouseProductModel> GetProductsToBuy()
-		{
-			BindableCollection<WareHouseProductModel> output = new BindableCollection<WareHouseProductModel>();
-			foreach (var item in ProductsToAdd)
-			{
-				output.Add(ObjectHelper.Copy(item));	
-			}
-			if (output.Count > 0)
-			{
-				var wareHouseProducts = _wareHouseData.GetProducts();
-				int counter = 0;
-				foreach (var itemOutput in output)
-				{
-					foreach (var itemWarehouse in wareHouseProducts)
-					{
-						if(itemOutput.FactoryNumber == itemWarehouse.FactoryNumber)
-						{
-							counter++;
-							itemOutput.ProductId = itemWarehouse.ProductId;
-						}
-					}
-				}
-				if(counter == 0)
-				{
-					throw new Exception("Something went wrong");
-				}
-				return output;
-			}
-			else
-			{
-				return null;
-			}
-		}
+		
 
 		public async Task MakeToBuy()
 		{
 			if (CanMakeToBuy)
 			{
+				ToBuysProductsData toBuysProductsData = new ToBuysProductsData();
 				var productsToAdd = new List<WareHouseProductModel>(ProductsToAdd);
 				var products = _mapper.Map<List<WHPostProductModel>>(productsToAdd);
-				products.ForEach(prod => _wareHouseData.PostProduct(prod));
+				List<WHProductModel> productsWithID = new List<WHProductModel>();
+				products.ForEach(prod => productsWithID.Add(toBuysProductsData.PostProduct(prod)));
+				BindableCollection<WareHouseProductModel> productsToBuy = new BindableCollection<WareHouseProductModel>(_mapper.Map<List<WareHouseProductModel>>(productsWithID));
 				_windowManager.ShowWindow(_makeToBuyViewModel);
-				await _events.PublishOnUIThreadAsync(new MakeToBuyEventModel(GetProductsToBuy()));
+				await _events.PublishOnUIThreadAsync(new MakeToBuyEventModel(productsToBuy));
 			}
 		}
 		public void AddProducts()

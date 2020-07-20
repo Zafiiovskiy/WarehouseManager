@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +12,6 @@ using WMDesktopUI.Events;
 using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
 using WMDesktopUI.Models;
-using WMDesktopUI.Views;
 
 namespace WMDesktopUI.ViewModels
 {
