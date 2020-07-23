@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WMDesktopUI.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Замовлення" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+        Title="Замовлення" Height="550" Width="950" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -55,7 +55,7 @@
                     <DataGridTemplateColumn Header="Ціна купівлі">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox IsReadOnly="True" MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -97,7 +97,7 @@
             <TextBlock x:Name="Profit" Margin="5" Foreground="#2a4e53"/>
         </StackPanel>
 
-        <Button x:Name="SaveChanges" ToolTip="Оформити замовлення на клієнта" Grid.Row="2" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+        <Button x:Name="SaveChanges" ToolTip="Зберегти зміни до замовлення" Grid.Row="2" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="ContentSaveEdit" Margin="0 0 4 0" Width="25" Height="25" VerticalAlignment="Center"/>
                 <TextBlock Text="Зберегти зміни" Margin="0 2 0 0"/>

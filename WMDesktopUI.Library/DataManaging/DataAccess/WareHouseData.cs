@@ -49,7 +49,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"PostProduct(WHPostProductModel model) coundn't post data. (model = {model.FactoryNumber})", ex);
             }
         }
-
         public void UpdateProduct(WHProductModel model)
         {
             try

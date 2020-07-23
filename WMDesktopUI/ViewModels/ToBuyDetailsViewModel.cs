@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using WMDesktopUI.Events;
@@ -17,7 +15,7 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-    class ToBuyDetailsViewModel : Screen, IHandle<ToBuyDetailsEventModel>
+	class ToBuyDetailsViewModel : Screen, IHandle<ToBuyDetailsEventModel>
     {
 		private IMapper _mapper;
 		private IEventAggregator _events;
@@ -36,8 +34,6 @@ namespace WMDesktopUI.ViewModels
 		/// <summary>
 		/// Private fields
 		/// </summary>
-		private List<int> MaxQuantityInStock = new List<int>();
-
 		public ToBuyDetailsViewModel(IEventAggregator events, IMapper mapper)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
@@ -139,27 +135,27 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				//ToBuysData toBuysData = new ToBuysData();
-				//var product = obj as WareHouseProductModel;
-				//var orders = toBuysData.GetToBuyByClientId(new
-				//{
-				//	ClientId = SelectedClient.Id
-				//});
-				//orders.Where(x => x.ProductId == product.ProductId).ToList().ForEach(x => toBuysData.ReverseOrderByProduct(x));
-				//BindableCollection<WareHouseProductModel> found = new BindableCollection<WareHouseProductModel>();
-				//foreach (var item in ProductsToBuy)
-				//{
-				//	if (item.ProductId != product.ProductId)
-				//	{
-				//		found.Add(item);
-				//	}
-				//}
-				//ProductsToBuy = found;
-				//if (ProductsToBuy.Count == 0)
-				//{
-				//	this.TryClose();
-				//	_events.PublishOnUIThread(new OrderAllProductsDeletedEventModel());
-				//}
+				ToBuysData toBuysData = new ToBuysData();
+				var product = obj as WareHouseProductModel;
+				var orders = toBuysData.GetToBuyByClientId(new
+				{
+					ClientId = SelectedClient.Id
+				});
+				orders.Where(x => x.ProductId == product.ProductId).ToList().ForEach(x => toBuysData.ReverseToBuyByProduct(x));
+				BindableCollection<WareHouseProductModel> found = new BindableCollection<WareHouseProductModel>();
+				foreach (var item in ProductsToBuy)
+				{
+					if (item.ProductId != product.ProductId)
+					{
+						found.Add(item);
+					}
+				}
+				ProductsToBuy = found;
+				if (ProductsToBuy.Count == 0)
+				{
+					this.TryClose();
+					_events.PublishOnUIThread(new ToBuysAllProductsDeletedEventModel());
+				}
 			}
 			catch (Exception ex)
 			{
@@ -204,31 +200,34 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-		public void LoadMaxQuantities()
+		public void SaveChanges()
 		{
+			ToBuysData toBuysData = new ToBuysData();
+			int counter = 0;
 			foreach (var item in ProductsToBuy)
 			{
-				MaxQuantityInStock.Add(item.QuantityInStock);
-				item.QuantityInStock = 0;
-			}
-		}
-		private void LoadToBuyQuantities(List<OReverseModel> toBuys)
-		{
-			try
-			{
-				for (int i = 0; i < toBuys.Count; i++)
+				if (InputHelper.isCorrectWareHouseProductToBuy(item))
 				{
-					if (toBuys[i].ProductId == ProductsToBuy[i].ProductId)
+					OPostModel postModel = new OPostModel()
 					{
-						ProductsToBuy[i].QuantityInStock = toBuys[i].ProductQuantity;
-					}
+						ProductId = item.ProductId,
+						ProductQuantity = item.QuantityInStock,
+						ProductNetPrice = item.NetPrice,
+						ProductSellPrice = item.SellPrice,
+						ClientId = SelectedClient.Id
+					};
+					toBuysData.UpdateToBuy(postModel);
+					counter++;
+				}
+				else
+				{
+					MessageBox.Show(InputHelper.isWrongWareHouseProductMassageToBuy(item));
+					break;
 				}
 			}
-			catch (Exception ex)
+			if(counter == ProductsToBuy.Count)
 			{
-				MessageBox.Show("Message: \n" + ex.Message + '\n' +
-						"StackTrase: \n" + ex.StackTrace + '\n' +
-						"InnerException: \n" + ex.InnerException);
+				MessageBox.Show("Замовлення успішно оновлено.");
 			}
 		}
 
@@ -241,8 +240,6 @@ namespace WMDesktopUI.ViewModels
 			{
 				ProductsToBuy = toBuys.ToBuyProducts;
 				SelectedClient = toBuys.Client;
-				LoadMaxQuantities();
-				LoadToBuyQuantities(toBuys.ToBuys);
 				modelSums = CountSums();
 				SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
 				SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");

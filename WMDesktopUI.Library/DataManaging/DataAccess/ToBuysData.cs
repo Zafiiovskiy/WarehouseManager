@@ -34,6 +34,18 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"GetToBuyByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
             }
         }
+        public void ReverseToBuyByProduct(OReverseModel model)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                sql.SaveData("dbo.spToBuysReversByProductId", model, "WMData");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"ReverseToBuyByProduct(OReverseModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
+            }
+        }
         public void ReverseToBuys(OReverseModel model)
         {
             try
@@ -57,6 +69,18 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             catch (Exception ex)
             {
                 throw new InvalidDataException($"GetOrderByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
+            }
+        }
+        public void UpdateToBuy(OPostModel model)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                sql.SaveData("dbo.spToBuysUpdate", model, "WMData");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"PostToBuy(OPostModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
             }
         }
     }

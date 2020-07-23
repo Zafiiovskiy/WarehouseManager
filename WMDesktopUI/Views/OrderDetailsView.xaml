@@ -46,7 +46,11 @@
                     <DataGridTemplateColumn Header="Кількість">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                    <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" IsReadOnly="True" Opacity="0.5" Text="{Binding Path=MaxQuantity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:/#}}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

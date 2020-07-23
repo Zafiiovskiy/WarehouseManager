@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -28,7 +29,7 @@ namespace WMDesktopUI.ViewModels
 		private DelegateCommandHelper _command;
 		private ClientModel _selectedClient;
 		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
-		private BindableCollection<WareHouseProductModel> _productsForOrder = new BindableCollection<WareHouseProductModel>();
+		private BindableCollection<DetailsOrderProductModel> _productsForOrder = new BindableCollection<DetailsOrderProductModel>();
 		private string _sumOfSellPrices;
 		private string _sumOfNetPrices;
 		private string _profit;
@@ -36,8 +37,6 @@ namespace WMDesktopUI.ViewModels
 		/// <summary>
 		/// Private fields
 		/// </summary>
-		private List<int> MaxQuantityInStock = new List<int>();
-
 		public OrderDetailsViewModel(IEventAggregator events, IMapper mapper, IWareHouseData wareHouseData, IOrdersData ordersData)
 		{
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
@@ -112,7 +111,7 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => Clients);
 			}
 		}
-		public BindableCollection<WareHouseProductModel> ProductsForOrder
+		public BindableCollection<DetailsOrderProductModel> ProductsForOrder
 		{
 			get { return _productsForOrder; }
 			set
@@ -141,13 +140,14 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				var product = obj as WareHouseProductModel;
+				var product = obj as DetailsOrderProductModel;
 				var orders = _ordersData.GetOrderByClientId(new
 				{
 					ClientId = SelectedClient.Id
 				});
 				orders.Where(x => x.ProductId == product.ProductId).ToList().ForEach(x => _ordersData.ReverseOrderByProduct(x));
-				BindableCollection<WareHouseProductModel> found = new BindableCollection<WareHouseProductModel>();
+				BindableCollection<DetailsOrderProductModel> found = new BindableCollection<DetailsOrderProductModel>();
+			
 				foreach (var item in ProductsForOrder)
 				{
 					if (item.ProductId != product.ProductId)
@@ -205,33 +205,81 @@ namespace WMDesktopUI.ViewModels
 						"InnerException: \n" + ex.InnerException);
 			}
 		}
-		public void LoadMaxQuantities()
+		private BindableCollection<DetailsOrderProductModel> LoadProducts(List<OReverseModel> orders)
 		{
-			foreach (var item in ProductsForOrder)
+			List<WHProductModel> _products = new List<WHProductModel>();
+
+			orders.ForEach(x => _products.Add(_wareHouseData.GetProductById(new
 			{
-				MaxQuantityInStock.Add(item.QuantityInStock);
-				item.QuantityInStock = 0;
+				x.ProductId
+			})));
+			var products = _mapper.Map<List<DetailsOrderProductModel>>(_products);
+			products.ForEach(x => x.CurrentQuantityInStock = x.QuantityInStock);
+			products.ForEach(x => x.MaxQuantity += x.QuantityInStock);
+			foreach (var item in orders)
+			{
+				products.Where(x => x.ProductId == item.ProductId).ToList().ForEach(x => x.QuantityInStock = item.ProductQuantity);
+				products.Where(x => x.ProductId == item.ProductId).ToList().ForEach(x => x.MaxQuantity += x.QuantityInStock);
 			}
+			return new BindableCollection<DetailsOrderProductModel>(products);
 		}
-		private void LoadOrderQuantities(List<OReverseModel> orders)
+		private List<OReverseModel> LoadOrders()
 		{
-			try
+			var orders = _ordersData.GetOrderByClientId(new { ClientId = SelectedClient.Id });
+
+
+			return orders;
+		}
+		
+		private void LoadOrder(OrderDetailsEventModel order)
+		{
+			SelectedClient = order.Client;
+			var orders = LoadOrders();
+			ProductsForOrder = LoadProducts(orders);
+		}
+		public void SaveChanges()
+		{
+			int counter = 0;
+			foreach (var product in ProductsForOrder)
 			{
-				for (int i = 0; i < orders.Count; i++)
+				if (0 < product.QuantityInStock && product.QuantityInStock <= product.MaxQuantity)
 				{
-					if (orders[i].ProductId == ProductsForOrder[i].ProductId)
+					if (InputHelper.isCorrectWareHouseProductInOrderDetails(product))
 					{
-						ProductsForOrder[i].QuantityInStock = orders[i].ProductQuantity;
+						OUpdateModel updateModel = new OUpdateModel()
+						{
+							ProductId = product.ProductId,
+							OrderQuantity = product.QuantityInStock,
+							WareHouseQuantity = product.MaxQuantity - product.QuantityInStock,
+							ProductNetPrice = product.NetPrice,
+							ProductSellPrice = product.SellPrice,
+							ClientId = SelectedClient.Id
+						};
+						_ordersData.UpdateOrder(updateModel);
+						counter++;
+					}
+					else
+					{
+						MessageBox.Show(InputHelper.isWrongWareHouseProductMassageInOrderDetails(product));
+						this.TryClose();
+						break;
 					}
 				}
+				else
+				{
+					MessageBox.Show($"На складі є {product.MaxQuantity} товару: {product.Name}.Введіть інше число або поповніть склад.");
+					this.TryClose();
+					break;
+				}
 			}
-			catch(Exception ex)
+			if (counter == ProductsForOrder.Count)
 			{
-				MessageBox.Show("Message: \n" + ex.Message + '\n' +
-						"StackTrase: \n" + ex.StackTrace + '\n' +
-						"InnerException: \n" + ex.InnerException);
+				MessageBox.Show("Покупку успішно оновлено.");
+				this.TryClose();
 			}
 		}
+
+
 
 		/// <summary>
 		/// Event handlers
@@ -240,10 +288,7 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				ProductsForOrder = order.OrderProducts;
-				SelectedClient = order.Client;
-				LoadMaxQuantities();
-				LoadOrderQuantities(order.Orders);
+				LoadOrder(order);
 				modelSums = CountSums();
 				SumOfNetPrices = "Сума цін купівлі: " + modelSums.NetPrice.ToString("c");
 				SumOfSellPrices = "Сума цін продажу: " + modelSums.SellPrice.ToString("c");

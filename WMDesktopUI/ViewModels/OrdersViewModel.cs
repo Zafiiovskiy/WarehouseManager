@@ -136,20 +136,8 @@ namespace WMDesktopUI.ViewModels
 			try
 			{
 				var client = obj as ClientModel;
-				OrdersData data = new OrdersData();
-				var orders = data.GetOrderByClientId(new
-				{
-					ClientId = client.Id
-				});
-
-				List<WHProductModel> productsDB = new List<WHProductModel>();
-				orders.ForEach(x => productsDB.Add(_wareHouseData.GetProductById(new
-				{
-					x.ProductId
-				})));
-				BindableCollection<WareHouseProductModel> products = new BindableCollection<WareHouseProductModel>(_mapper.Map<List<WareHouseProductModel>>(productsDB));
 				_windowManager.ShowWindow(IoC.Get<OrderDetailsViewModel>());
-				_events.PublishOnUIThread(new OrderDetailsEventModel(products, client, orders));
+				_events.PublishOnUIThread(new OrderDetailsEventModel(client));
 			}
 			catch (Exception ex)
 			{

@@ -22,7 +22,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException("GetOrders() coundn't return data.", ex);
             }
         }
-
         public void ReverseOrders(OReverseModel model)
         {
             try
@@ -35,7 +34,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"ReverseOrders(OReverseModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
             }
         }
-
         public void ReverseOrderByProduct(OReverseModel model)
         {
             try
@@ -48,7 +46,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"ReverseOrderByProduct(OReverseModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
             }
         }
-
         public List<OReverseModel> GetOrderByClientId(object Id)
         {
             try
@@ -62,8 +59,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"GetOrderByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
             }
         }
-
-
         public void PostOrder(OPostModel model)
         {
             try
@@ -74,6 +69,18 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             catch (Exception ex)
             {
                 throw new InvalidDataException($"PostOrder(OPostModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
+            }
+        }
+        public void UpdateOrder(OUpdateModel model)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                sql.SaveData("dbo.spOrdersUpdate", model, "WMData");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"PostToBuy(OPostModel model) coundn't post data (model.ProductId = {model.ProductId}).", ex);
             }
         }
     }

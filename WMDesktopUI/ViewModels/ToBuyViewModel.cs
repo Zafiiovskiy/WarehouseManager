@@ -15,7 +15,7 @@ using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
 {
-    public class ToBuyViewModel : Screen
+    public class ToBuyViewModel : Screen, IHandle<ToBuysAllProductsDeletedEventModel>
     {
 		private IMapper _mapper;
 		private ICommand _command;
@@ -301,17 +301,14 @@ namespace WMDesktopUI.ViewModels
 			}
 		}
 
+
+
 		/// <summary>
 		/// Event handlers
 		/// </summary>
-
-		//public void Handle(OrderAllProductsDeletedEventModel message)
-		//{
-		//	RefreshView();
-		//}
-		//public void Handle(OpenOrdersEvent message)
-		//{
-		//	RefreshView();
-		//}
+		public void Handle(ToBuysAllProductsDeletedEventModel message)
+		{
+			RefreshView();
+		}
 	}
 }

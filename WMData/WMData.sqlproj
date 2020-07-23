@@ -90,6 +90,9 @@
     <Build Include="dbo\Stored Procedures\spToBuysProductsPostAll.sql" />
     <Build Include="dbo\Stored Procedures\spToBuysGetClientId.sql" />
     <Build Include="dbo\Stored Procedures\spToBuysProductsGetById.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysReversByProductId.sql" />
+    <Build Include="dbo\Stored Procedures\spToBuysUpdate.sql" />
+    <Build Include="dbo\Stored Procedures\spOrdersUpdate.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="WMData.refactorlog" />

@@ -11,14 +11,11 @@ namespace WMDesktopUI.Events
 {
     public class OrderDetailsEventModel
     {
-        public BindableCollection<WareHouseProductModel> OrderProducts { get; set; }
         public ClientModel Client { get; set; }
-        public List<OReverseModel> Orders { get; set; }
-        public OrderDetailsEventModel(BindableCollection<WareHouseProductModel> orderProducts,ClientModel client, List<OReverseModel> orders)
+        
+        public OrderDetailsEventModel(ClientModel client)
         {
-            OrderProducts = orderProducts;
             Client = client;
-            Orders = orders;
         }
     }
 }

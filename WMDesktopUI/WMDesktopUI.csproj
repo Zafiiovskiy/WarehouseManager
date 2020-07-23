@@ -151,11 +151,14 @@
     <Compile Include="Events\OrderEventModel.cs" />
     <Compile Include="Events\OrderMadeEventModel.cs" />
     <Compile Include="Events\ToBuyDetailsEventModel.cs" />
+    <Compile Include="Events\ToBuysAllProductsDeletedEventModel.cs" />
     <Compile Include="Helpers\ConvertHelper.cs" />
     <Compile Include="Helpers\DelegateCommandHelper.cs" />
+    <Compile Include="Helpers\EquanlityOrdersHelper.cs" />
     <Compile Include="Helpers\InputHelper.cs" />
     <Compile Include="Helpers\ObjectHelper.cs" />
     <Compile Include="Models\ClientModel.cs" />
+    <Compile Include="Models\DetailsOrderProductModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\WareHouseProductModel.cs" />
     <Compile Include="ViewModels\AddClientsViewModel.cs" />

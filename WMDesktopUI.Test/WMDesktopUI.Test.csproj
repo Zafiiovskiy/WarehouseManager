@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="AddClientsViewModelTests.cs" />
     <Compile Include="AddProductToWareHouseViewModelTests.cs" />
+    <Compile Include="OrderDetailsViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

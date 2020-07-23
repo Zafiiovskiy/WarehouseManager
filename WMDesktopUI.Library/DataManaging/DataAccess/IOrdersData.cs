@@ -10,5 +10,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
         void PostOrder(OPostModel model);
         void ReverseOrderByProduct(OReverseModel model);
         void ReverseOrders(OReverseModel model);
+        void UpdateOrder(OUpdateModel model);
     }
 }

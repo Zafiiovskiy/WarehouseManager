@@ -60,7 +60,7 @@
                     <DataGridTemplateColumn Header="Заводський номер">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=FactoryNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox IsReadOnly="True" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=FactoryNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -68,7 +68,7 @@
                     <DataGridTemplateColumn Header="Назва">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть назву" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox IsReadOnly="True" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть назву" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -84,7 +84,7 @@
                     <DataGridTemplateColumn Header="Кількість">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox IsReadOnly="True" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=QuantityInStock,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -92,7 +92,7 @@
                     <DataGridTemplateColumn Header="Ціна купівлі">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox IsReadOnly="True" MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=NetPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -100,7 +100,7 @@
                     <DataGridTemplateColumn Header="Ціна продажу">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBox MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=SellPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                                <TextBox IsReadOnly="True" MinWidth="50" MaxWidth="200" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Path=SellPrice,Mode=TwoWay,StringFormat={}{0:C},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="0" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
