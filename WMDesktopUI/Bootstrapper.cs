@@ -31,6 +31,7 @@ namespace WMDesktopUI
                 cfg.CreateMap<WHProductModel, DetailsOrderProductModel>();
 
                 cfg.CreateMap<CModel, ClientModel>();
+                cfg.CreateMap<CModel, OrderClientModel>();
                 cfg.CreateMap<ClientModel, CModel>();
                 cfg.CreateMap<ClientModel, CPostModel>();
 

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using WMDesktopUI.Events;
 using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
+using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
@@ -113,7 +114,37 @@ namespace WMDesktopUI.ViewModels
 		private void ExecuteFinishOrder(object obj)
 		{
 			var client = obj as ClientModel;
-			MessageBox.Show($"Finish {client.Name}");
+			ToBuysData _toBuysData = new ToBuysData();
+			ToBuysProductsData _toBuysProductsData = new ToBuysProductsData();
+			var orders = _toBuysData.GetToBuysAllByClientId(new { ClientId = client.Id });
+			List<WHProductModel> productModels = new List<WHProductModel>();
+			orders.ForEach(x => productModels.Add(_toBuysProductsData.GetProductById(new { x.ProductId })));
+			List<HPostModel> historyPostModels = new List<HPostModel>();
+			for (int i = 0; i < orders.Count; i++)
+			{
+				historyPostModels.Add(new HPostModel
+				{
+					Sender = false,
+					ProductId = orders[i].ProductId,
+					FactoryNumber = productModels[i].FactoryNumber,
+					Name = productModels[i].Name,
+					Set = productModels[i].Set,
+					Type = productModels[i].Type,
+					Photo = productModels[i].Photo,
+					ProductQuantity = orders[i].ProductQuantity,
+					ProductDescription = productModels[i].ProductDescription,
+					ProductNetPrice = orders[i].ProductNetPrice,
+					ProductSellPrice = orders[i].ProductSellPrice,
+					OrderDateTime = orders[i].OrderDateTime,
+					ClientId = client.Id
+				});
+			}
+			HistoryData historyData = new HistoryData();
+			foreach (var item in historyPostModels)
+			{
+				historyData.PostHistory(item);
+			}
+			RefreshView();
 		}
 		private void ExecuteReverseOrder(object obj)
 		{

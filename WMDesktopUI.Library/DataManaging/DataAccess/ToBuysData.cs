@@ -71,6 +71,19 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"GetOrderByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
             }
         }
+        public List<OGetModel> GetToBuysAllByClientId(object Id)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<OGetModel, dynamic>("dbo.spToBuysGetAllClientId", Id, "WMData");
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"GetToBuysAllByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
+            }
+        }
         public void UpdateToBuy(OPostModel model)
         {
             try

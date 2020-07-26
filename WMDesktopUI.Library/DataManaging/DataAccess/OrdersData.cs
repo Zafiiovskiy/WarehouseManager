@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Library.DataManaging.SQLAccess;
@@ -20,6 +21,19 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             catch (Exception ex)
             {
                 throw new InvalidDataException("GetOrders() coundn't return data.", ex);
+            }
+        }
+        public DateTime GetOrderTimeByClient(object Id)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<DateTime, dynamic>("dbo.spOrdersGetTimeByClientId", Id, "WMData");
+                return output.First();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"GetOrderByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
             }
         }
         public void ReverseOrders(OReverseModel model)
@@ -52,6 +66,19 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             {
                 SqlDataAccess sql = new SqlDataAccess();
                 var output = sql.LoadData<OReverseModel, dynamic>("dbo.spOrdersGetClientId", Id, "WMData");
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException($"GetOrderByClientId(object Id) coundn't get data (Id = {Id.ToString()}).", ex);
+            }
+        }
+        public List<OGetModel> GetOrderAllByClientId(object Id)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<OGetModel, dynamic>("dbo.spOrdersGetAllByClientId", Id, "WMData");
                 return output;
             }
             catch (Exception ex)

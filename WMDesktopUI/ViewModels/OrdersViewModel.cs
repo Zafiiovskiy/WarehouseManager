@@ -2,6 +2,7 @@
 using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ using System.Windows.Input;
 using WMDesktopUI.Events;
 using WMDesktopUI.Helpers;
 using WMDesktopUI.Library.DataManaging.DataAccess;
+using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Models;
 
 namespace WMDesktopUI.ViewModels
@@ -20,20 +22,25 @@ namespace WMDesktopUI.ViewModels
 		private IWindowManager _windowManager;
 		private IEventAggregator _events;
 		private IWareHouseData _wareHouseData;
+		private IOrdersData _ordersData;
+		private IClientsData _clientsData;
 		/// <summary>
 		/// Private backing fields
 		/// </summary>
 		private TextBlock _selectedValue; 
 		private string _searchBox;
-		private BindableCollection<ClientModel> _clients = new BindableCollection<ClientModel>();
+		private BindableCollection<OrderClientModel> _clients = new BindableCollection<OrderClientModel>();
 
 
 
 
-		public OrdersViewModel(IMapper mapper,IWindowManager windowManager, IEventAggregator events, IWareHouseData wareHouseData)
+		public OrdersViewModel(IMapper mapper,IWindowManager windowManager, IEventAggregator events,
+			IWareHouseData wareHouseData, IClientsData clientsData, IOrdersData ordersData)
 		{
 			_mapper = mapper;
 			_windowManager = windowManager;
+			_clientsData = clientsData;
+			_ordersData = ordersData;
 			_wareHouseData = wareHouseData;
 			_events = events;
 			_events.Subscribe(this);
@@ -62,7 +69,7 @@ namespace WMDesktopUI.ViewModels
 				NotifyOfPropertyChange(() => SearchBox);
 			}
 		}
-		public BindableCollection<ClientModel> Clients
+		public BindableCollection<OrderClientModel> Clients
 		{
 			get { return _clients; }
 			set
@@ -109,7 +116,35 @@ namespace WMDesktopUI.ViewModels
 		private void ExecuteFinishOrder(object obj)
 		{
 			var client = obj as ClientModel;
-			MessageBox.Show($"Finish {client.Name}");
+			var orders = _ordersData.GetOrderAllByClientId(new { ClientId = client.Id });
+			List<WHProductModel> productModels = new List<WHProductModel>();
+			orders.ForEach(x => productModels.Add(_wareHouseData.GetProductById(new { x.ProductId })));
+			List<HPostModel> historyPostModels = new List<HPostModel>();
+			for (int i = 0; i < orders.Count; i++)
+			{
+				historyPostModels.Add(new HPostModel
+				{
+					Sender = true,
+					ProductId = orders[i].ProductId,
+					FactoryNumber = productModels[i].FactoryNumber,
+					Name = productModels[i].Name,
+					Set = productModels[i].Set,
+					Type = productModels[i].Type,
+					Photo = productModels[i].Photo,
+					ProductQuantity = orders[i].ProductQuantity,
+					ProductDescription = productModels[i].ProductDescription,
+					ProductNetPrice = orders[i].ProductNetPrice,
+					ProductSellPrice = orders[i].ProductSellPrice,
+					OrderDateTime = orders[i].OrderDateTime,
+					ClientId = client.Id
+				});
+			}
+			HistoryData historyData = new HistoryData();
+			foreach (var item in historyPostModels)
+			{
+				historyData.PostHistory(item);
+			}
+			RefreshView();
 		}
 		private void ExecuteReverseOrder(object obj)
 		{
@@ -155,10 +190,10 @@ namespace WMDesktopUI.ViewModels
 		{
 			try
 			{
-				ClientsData clientsData = new ClientsData();
-				var wareHouseList = clientsData.GetClientsHaveOrders();
-				var clients = _mapper.Map<List<ClientModel>>(wareHouseList);
-				Clients = new BindableCollection<ClientModel>(clients);
+				var wareHouseList = _clientsData.GetClientsHaveOrders();
+				var clients = _mapper.Map<List<OrderClientModel>>(wareHouseList);
+				clients.ForEach(x => x.DateTimeOrder = _ordersData.GetOrderTimeByClient(new { ClientId = x.Id }).ToLocalTime());
+				Clients = new BindableCollection<OrderClientModel>(clients);
 			}
 			catch(Exception ex)
 			{
@@ -190,7 +225,7 @@ namespace WMDesktopUI.ViewModels
 					if (SelectedValue?.Text == "за Номером")
 					{
 						var found = Clients.Where(x => x.PhoneNumber.ToString().Contains(SearchBox)).ToList();
-						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						BindableCollection<OrderClientModel> result = new BindableCollection<OrderClientModel>();
 						foreach (var item in Clients)
 						{
 							if (found.Contains(item))
@@ -210,7 +245,7 @@ namespace WMDesktopUI.ViewModels
 					else if (SelectedValue?.Text == "за Ім'ям")
 					{
 						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Name)).Where(x => x.Name.Contains(SearchBox)).ToList();
-						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						BindableCollection<OrderClientModel> result = new BindableCollection<OrderClientModel>();
 						foreach (var item in Clients)
 						{
 							if (found.Contains(item))
@@ -223,7 +258,7 @@ namespace WMDesktopUI.ViewModels
 					else if (SelectedValue?.Text == "за Прізвищем")
 					{
 						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Surname)).Where(x => x.Surname.Contains(SearchBox)).ToList();
-						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						BindableCollection<OrderClientModel> result = new BindableCollection<OrderClientModel>();
 						foreach (var item in Clients)
 						{
 							if (found.Contains(item))
@@ -243,7 +278,7 @@ namespace WMDesktopUI.ViewModels
 					else if (SelectedValue?.Text == "за Адресою")
 					{
 						var found = Clients.Where(x => !String.IsNullOrWhiteSpace(x.Adress)).Where(x => x.Adress.Contains(SearchBox)).ToList();
-						BindableCollection<ClientModel> result = new BindableCollection<ClientModel>();
+						BindableCollection<OrderClientModel> result = new BindableCollection<OrderClientModel>();
 						foreach (var item in Clients)
 						{
 							if (found.Contains(item))

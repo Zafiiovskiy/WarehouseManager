@@ -2,5 +2,5 @@
 	@ClientId int
 AS
 BEGIN
-	SELECT [ProductId], [ProductQuantity], [ClientId] FROM dbo.Orders WHERE ClientId = @ClientId AND IsDone = 0;
+	SELECT [ProductId], [ProductQuantity], [ClientId] FROM dbo.Orders WHERE ClientId = @ClientId;
 END
