@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using WMDesktopUI.Library.DataManaging.Models;
 using WMDesktopUI.Library.DataManaging.SQLAccess;
 
@@ -19,6 +20,19 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
             catch (Exception ex)
             {
                 throw new InvalidDataException("GetClients() coundn't get data.", ex);
+            }
+        }
+        public CModel GetClientsById(object Id)
+        {
+            try
+            {
+                SqlDataAccess sql = new SqlDataAccess();
+                var output = sql.LoadData<CModel, dynamic>("dbo.spClientsGetById", Id, "WMData");
+                return output.First();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidDataException("GetClientsById() coundn't get data.", ex);
             }
         }
         public List<CModel> GetClientsHaveOrders()
@@ -59,7 +73,6 @@ namespace WMDesktopUI.Library.DataManaging.DataAccess
                 throw new InvalidDataException($"PostClient(CPostModel model) coundn't post data.(model.PhoneNumber = {model.PhoneNumber})", ex);
             }
         }
-
         public void UpdateClient(CModel model)
         {
             try

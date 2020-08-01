@@ -159,6 +159,7 @@
     <Compile Include="Helpers\ObjectHelper.cs" />
     <Compile Include="Models\ClientModel.cs" />
     <Compile Include="Models\DetailsOrderProductModel.cs" />
+    <Compile Include="Models\HistoryModel.cs" />
     <Compile Include="Models\OrderClientModel.cs" />
     <Compile Include="Models\OrderModel.cs" />
     <Compile Include="Models\WareHouseProductModel.cs" />

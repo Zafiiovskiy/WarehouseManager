@@ -3,10 +3,196 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WMDesktopUI.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="Wheat">
+             xmlns:local="clr-namespace:WMDesktopUI.Views" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"  xml:lang="de-DE"
+             d:DesignHeight="450" d:DesignWidth="800" Background="White">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Border BorderBrush="#2a4e53" Grid.Row="0" BorderThickness="1" Margin="5" CornerRadius="4"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="1" BorderThickness="1" Margin="5" CornerRadius="4"/>
+        <Border BorderBrush="#2a4e53" Grid.Row="3" BorderThickness="1" Margin="5" CornerRadius="4"/>
+
+        <Button x:Name="Search" Grid.Row="0" HorizontalAlignment="Right" Foreground="#4e7e92" Margin="10" Padding="0" Background="Transparent" BorderBrush="#4e7e92" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Search" Margin="4 0 0 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Шукати в історії" Margin="0 2 10 2"/>
+            </StackPanel>
+        </Button>
+
+        <Button x:Name="RefreshView" Grid.Row="0" HorizontalAlignment="Left" Foreground="#2a4e53" Margin="10" Padding="0" Background="Transparent" BorderBrush="#2a4e53" BorderThickness="1">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Refresh" Margin="4 0 0 0" Width="25" Height="25" VerticalAlignment="Center"/>
+                <TextBlock Text="Оновити історію" Margin="0 2 8 2"/>
+            </StackPanel>
+        </Button>
+
+        <materialDesign:PopupBox StaysOpen="True" HorizontalAlignment="Right" VerticalAlignment="Center" IsPopupOpen="{Binding isOpenPopup, FallbackValue=false,Mode=TwoWay}">
+            <StackPanel Orientation="Vertical" Margin="10">
+                <TextBlock Text="Клієнт:" Margin="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ClientName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть ім'я" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ClientSurname,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть прізвище" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ClientNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                </StackPanel>
+                <Line/>
+                <TextBlock Text="Товар:" Margin="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ProductName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть ім'я" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ProductFactoryNumber,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть заводський номер" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                    <TextBox MaxWidth="200" Margin="10" TextWrapping="Wrap" Text="{Binding ProductSet,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Введіть сервіз" BorderBrush="Transparent" materialDesign:TextFieldAssist.UnderlineBrush="#4e7e92"/>
+                </StackPanel>
+            </StackPanel>
+        </materialDesign:PopupBox>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="10">
+            <DataGrid ItemsSource="{Binding HistoryModels,Mode=TwoWay}" Grid.Row="1" Margin="10" HorizontalAlignment="Center" 
+                  AutoGenerateColumns="False" CanUserDeleteRows="True" CanUserAddRows="False" MaxHeight="500" >
+
+                <DataGrid.Columns>
+
+                    <DataGridTemplateColumn Header="Дата підтвердження" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=FinishDateTime,StringFormat={}{0:d/M/yyyy}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Клієнт" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button VerticalAlignment="Center" HorizontalAlignment="Center" x:Name="OpenClientDetails" Height="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="Transparent" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Client.Name}" Margin="0 4 0 0"/>
+                                        <materialDesign:PackIcon Kind="InformationOutline" Margin="0" Width="12" Height="12" VerticalAlignment="Top"/>
+                                    </StackPanel>
+                                    <Button.ToolTip>
+                                        <StackPanel Orientation="Vertical" Margin="2">
+                                            <StackPanel Orientation="Horizontal" Margin="2">
+                                                <TextBlock Text="{Binding Path=Client.Name}" Margin="0 0 2 0"/>
+                                                <TextBlock Text="{Binding Path=Client.Surname}"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Path=Client.PhoneNumber}" Margin="2"/>
+                                            <TextBlock Text="{Binding Path=Client.Adress}" Margin="2"/>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Товар" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="OpenProductDetails" Height="30" Foreground="#4e7e92" Padding="0" Background="Transparent" BorderBrush="Transparent" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Path=Name}" Margin="0 4 0 0"/>
+                                        <materialDesign:PackIcon Kind="InformationOutline" Margin="0" Width="12" Height="12" VerticalAlignment="Top"/>
+                                    </StackPanel>
+                                    <Button.ToolTip>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding FactoryNumber}" Margin="5" TextWrapping="Wrap" MinWidth="80" MaxWidth="80" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Name}" Margin="5" TextWrapping="Wrap" MinWidth="80" MaxWidth="80" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Set}" Margin="5" TextWrapping="Wrap" MinWidth="80" MaxWidth="80" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Type}" Margin="5" TextWrapping="Wrap"  MaxWidth="80" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            <Image Source="{Binding Photo}" Margin="5" MaxWidth="100" MaxHeight="100"/>
+                                        </StackPanel>
+                                    </Button.ToolTip>
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="К-сть" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ProductQuantity}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна купівлі" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ProductNetPrice, StringFormat=c}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Ціна продажу" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=ProductSellPrice, StringFormat=c}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTemplateColumn Header="Дата оформлення" MinWidth="130">
+                        <DataGridTemplateColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTemplateColumn.HeaderStyle>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Path=OrderDateTime,StringFormat={}{0:d/M/yyyy}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+            <Label Content="Реалізова закупівля:" Margin="0 5 0 5"/>
+            <TextBlock Text="{Binding SumOfNetPrices,StringFormat=c}" Margin="0 9 5 5" Foreground="#2a4e53"/>
+            <Label Content="Дохід:" Margin="0 5 0 5"/>
+            <TextBlock Text="{Binding SumOfSellPrices,StringFormat=c}" Margin="0 9 5 5" Foreground="#2a4e53"/>
+            <Label Content="Прибуток:" Margin="0 5 0 5"/>
+            <TextBlock Text="{Binding SumOfEarnings,StringFormat=c}" Margin="0 9 5 5" Foreground="#2a4e53"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right">
+            <Button x:Name="OpenAnalitics"  ToolTip="Подивитися аналітику за весь час продажей" Grid.Row="3" Background="Transparent" HorizontalAlignment="Right" BorderBrush="#2a4e53" Margin="10" Foreground="#2a4e53">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="HomeAnalytics" Margin="0" Width="25" Height="25" VerticalAlignment="Center"/>
+                    <TextBlock Text="Аналітика" Margin="0 2 0 0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

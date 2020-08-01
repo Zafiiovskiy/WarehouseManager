@@ -98,6 +98,8 @@
     <Build Include="dbo\Stored Procedures\spHistoryPost.sql" />
     <Build Include="dbo\Stored Procedures\spOrdersGetAllByClientId.sql" />
     <Build Include="dbo\Stored Procedures\spToBuysGetAllClientId.sql" />
+    <Build Include="dbo\Stored Procedures\spHistoryGetAll.sql" />
+    <Build Include="dbo\Stored Procedures\spClientsGetById.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="WMData.refactorlog" />
